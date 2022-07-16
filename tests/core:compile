@@ -1,0 +1,41 @@
+(core:funcall (core:compile '(lambda (&rest e) e)) '(1 2 3 4 5));(1 2 3 4 5)
+(core:funcall (core:compile '(lambda () 1)) ());1
+(core:funcall (core:compile '(lambda)) ());:nil
+(core:funcall (core:compile '(lambda (a &rest e) e)) '(1 2 3 4 5));(2 3 4 5)
+(core:funcall (core:compile '(lambda (a b &rest e) e)) '(1 2 3 4 5)));(3 4 5)
+(core:funcall (core:compile '(lambda (a b c &rest e) e)) '(1 2 3 4 5));(4 5)
+(core:funcall (core:compile '(lambda (a b c d &rest e) e)) '(1 2 3 4 5));(5)
+(core:funcall (core:compile '(lambda (a b c d e &rest f) f)) '(1 2 3 4 5));:nil
+(core:funcall (core:compile '(lambda (a b) (core:fixnump b))) '(1 2));:t
+(core:funcall (core:compile '(lambda (a b) (core:null b))) '(1 2));:nil
+(core:funcall (core:compile '(lambda (a b) (core:null b))) '(1 2));:nil
+(core:funcall (core:compile '(lambda (a b) (mu:fixnum+ 1 2))) '(1 2));3
+(core:funcall (core:compile '(lambda (a b) (mu:fixnum+ 1 2))) '(1 2));3
+(core:funcall (core:compile '(lambda (a b) (mu:fixnum+ a b))) '(1 2));3
+(core:funcall (core:compile '(lambda (a b) (mu:fixnum+ a b))) '(1 2));3
+(core:funcall (core:compile '(lambda (a b) (mu:write b mu:std-out ()))) '(1 2));22
+(core:funcall (core:compile '(lambda (a b) (mu:write b mu:std-out ()))) '(1 2));22
+(core:funcall (core:compile '(lambda (a b) (mu:type-of b))) '(1 2));:fixnum
+(core:funcall (core:compile '(lambda (a b) (mu:type-of b))) '(1 2));:fixnum
+(core:funcall (core:compile '(lambda (a b) 1)) '(2 3));1
+(core:funcall (core:compile '(lambda (a) 1)) '(2));1
+(core:funcall (core:compile '(lambda (a) a)) '(1));1
+(mu:eq :func (mu:type-of (core:compile '(lambda () 1))));:t
+(mu:eq :func (mu:type-of (core:compile '(lambda))));:t
+(mu:eq :func (mu:type-of (core:compile '(lambda (a b) b))));:t
+(mu:eq :func (mu:type-of (core:compile '(lambda (a) "hoo"))));:t
+(mu:eq :func (mu:type-of (core:compile '(lambda (a) a))));:t
+(mu:eq :func (mu:type-of core::compile-add-env));:t
+(mu:eq :func (mu:type-of core::compile-lambda));:t
+(mu:eq :func (mu:type-of core::compile-lambda-body));:t
+(mu:eq :func (mu:type-of core::compile-symbol));:t
+(mu:eq :func (mu:type-of core::core-lambda));:t
+(mu:eq :func (mu:type-of core::symbol-frame));:t
+(mu:eq :func (mu:type-of core:compile));:t
+(mu:funcall (core:compile '(lambda () 1)) ());1
+(mu:funcall (core:compile '(lambda)) ());:nil
+(mu:funcall (core:compile '(lambda (a b) (core:null b))) '(1 2));:nil
+(mu:funcall (core:compile '(lambda (a b) (mu:fixnum+ 1 2))) '(1 2));3
+(mu:funcall (core:compile '(lambda (a b) (mu:fixnum+ a b))) '(1 2));3
+(mu:funcall (core:compile '(lambda (a b) (mu:write b mu:std-out ()))) '(1 2));22
+(mu:funcall (core:compile '(lambda (a b) (mu:type-of b))) '(1 2));:fixnum

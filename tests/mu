@@ -1,0 +1,135 @@
+#(:byte);#(:byte)
+#(:char);
+#(:fixnum);#(:fixnum)
+#(:float);#(:float)
+#(:t);#(:t)
+((:lambda (a) a) '(a b c));(a b c)
+(:if () 1 2);2
+(:if :t 1 2);1
+(mu:boundp 'foo);:nil
+(mu:boundp ());:t
+(mu:car '(1 2 3));1
+(mu:car ());:nil
+(mu:cdr '(1 2 3));(2 3)
+(mu:cdr ());:nil
+(mu:cons 1 '(2));(1 2)
+(mu:cons 1 2);(1 . 2)
+(mu:eq #\\p #\\p);:t
+(mu:eq :func (mu:type-of :t));:nil
+(mu:eq :func (mu:type-of mu::fclone));:t
+(mu:eq :func (mu:type-of mu::fn-int));:t
+(mu:eq :func (mu:type-of mu::view));:t
+(mu:eq :func (mu:type-of mu:boundp));:t
+(mu:eq :func (mu:type-of mu:car));:t
+(mu:eq :func (mu:type-of mu:cdr));:t
+(mu:eq :func (mu:type-of mu:ch-code));:t
+(mu:eq :func (mu:type-of mu:code-ch));:t
+(mu:eq :func (mu:type-of mu:cons));:t
+(mu:eq :func (mu:type-of mu:eofp));:t
+(mu:eq :func (mu:type-of mu:eq));:t
+(mu:eq :func (mu:type-of mu:eval));:t
+(mu:eq :func (mu:type-of mu:except));:t
+(mu:eq :func (mu:type-of mu:fixnum*));:t
+(mu:eq :func (mu:type-of mu:fixnum+));:t
+(mu:eq :func (mu:type-of mu:fixnum+));:t
+(mu:eq :func (mu:type-of mu:fixnum-));:t
+(mu:eq :func (mu:type-of mu:fixnum<));:t
+(mu:eq :func (mu:type-of mu:float*));:t
+(mu:eq :func (mu:type-of mu:float+));:t
+(mu:eq :func (mu:type-of mu:float-));:t
+(mu:eq :func (mu:type-of mu:float/));:t
+(mu:eq :func (mu:type-of mu:float<));:t
+(mu:eq :func (mu:type-of mu:floor));:t
+(mu:eq :func (mu:type-of mu:funcall));:t
+(mu:eq :func (mu:type-of mu:get-str));:t
+(mu:eq :func (mu:type-of mu:intern));:t
+(mu:eq :func (mu:type-of mu:keysymp));:t
+(mu:eq :func (mu:type-of mu:keyword));:t
+(mu:eq :func (mu:type-of mu:length));:t
+(mu:eq :func (mu:type-of mu:list-sv));:t
+(mu:eq :func (mu:type-of mu:logand));:t
+(mu:eq :func (mu:type-of mu:logor));:t
+(mu:eq :func (mu:type-of mu:ns));:t
+(mu:eq :func (mu:type-of mu:ns-find));:t
+(mu:eq :func (mu:type-of mu:ns-name));:t
+(mu:eq :func (mu:type-of mu:ns-imp));:t
+(mu:eq :func (mu:type-of mu:ns-syms));:t
+(mu:eq :func (mu:type-of mu:nth));:t
+(mu:eq :func (mu:type-of mu:nthcdr));:t
+(mu:eq :func (mu:type-of mu:open));:t
+(mu:eq :func (mu:type-of mu:write));:t
+(mu:eq :func (mu:type-of mu:raise));:t
+(mu:eq :func (mu:type-of mu:rd-byte));:t
+(mu:eq :func (mu:type-of mu:read));:t
+(mu:eq :func (mu:type-of mu:slice));:t
+(mu:eq :func (mu:type-of mu:sv-len));:t
+(mu:eq :func (mu:type-of mu:sv-ref));:t
+(mu:eq :func (mu:type-of mu:sv-type));:t
+(mu:eq :func (mu:type-of mu:symbol));:t
+(mu:eq :func (mu:type-of mu:sy-name));:t
+(mu:eq :func (mu:type-of mu:sy-ns));:t
+(mu:eq :func (mu:type-of mu:sy-val));:t
+(mu:eq :func (mu:type-of mu:trunc));:t
+(mu:eq :func (mu:type-of mu:type-of));:t
+(mu:eq :func (mu:type-of mu:un-byte));:t
+(mu:eq :func (mu:type-of mu:with-ex));:t
+(mu:eq :func (mu:type-of mu:wr-char));:t
+(mu:eq :func (mu:type-of mu:wr-byte));:t
+(mu:eq :vector (mu:type-of mu:version));:t
+(mu:eq :t :nil);:nil
+(mu:eq :t :t);:t
+(mu:eq mu:funcall mu:funcall);:t
+(mu:eval 1);1
+(mu:fixnum* -2 3);-6
+(mu:fixnum* 2 3);6
+(mu:fixnum+ -1 2);1
+(mu:fixnum+ 1 2);3
+(mu:fixnum- 1 2);-1
+(mu:fixnum- 2 1);1
+(mu:fixnum< 2 3);:t
+(mu:fixnum< 3 2);:nil
+(mu:float* -0.1 0.2);-0.020000
+(mu:float* 0.1 0.2);0.020000
+(mu:float+ -3.0 2.0);-1.000000
+(mu:float+ 0.1 0.2);0.300000
+(mu:float- 0.1 0.2);-0.100000
+(mu:float- 3.0 1.0);2.000000
+(mu:float/ 0.1 0.2);0.500000
+(mu:float/ 2.0 3.0);0.666667
+(mu:float< 2.0 3.0);:t
+(mu:float< 3.0 2.0);:nil
+(mu:floor 2 3);(0 . 2)
+(mu:floor 3 2);(1 . 1)
+(mu:funcall mu:fixnum+ '(1 2));3
+(mu:write (mu:get-str (mu:open :string :output "")) mu:std-out :t);""
+(mu:keysymp 'foo);:nil
+(mu:keysymp :key);:t
+(mu:length '(1 2 3));3
+(mu:length ());0
+(mu:logand 3 1);1
+(mu:logor 4 2);6
+(mu:type-of "foo");:vector
+(mu:nth 0 '(1 2 3));1
+(mu:nthcdr 0 '(1 2 3));(1 2 3)
+(mu:nthcdr 0 ());:nil
+(mu:nthcdr 3 ());:nil
+(mu:nthcdr 0 '(a b c));(a b c)
+(mu:nthcdr 2 '(a b c));(c)
+(mu:nthcdr 4 '(a b c));:nil
+(mu:write 1.0 mu:std-out :t);1.0000001.000000
+(mu:write 123 mu:std-out :nil);123123
+(mu:write 123 mu:std-out :t);123123
+(mu:read (mu:open :string :input "'f"));(:quote f)
+(mu:sv-len "abc");3
+(mu:sv-len #(:t 1 2 3));3
+(mu:sv-ref #(:fixnum 1 2 3) 1);2
+(mu:sv-ref #(:float 1.0 2.0 3.0) 1);2.000000
+(mu:sv-ref #(:t 'a 2 3.0) 1);2
+(mu:sv-type #(:t a b c));:t
+(mu:sy-val :nil);:nil
+(mu:symbol "abc");abc
+(mu:trunc 2 3);(0 . 2)
+(mu:trunc 3 2);(1 . 1)
+(mu:wr-char #\\a mu:std-out);aa
+();:nil
+:t;:t

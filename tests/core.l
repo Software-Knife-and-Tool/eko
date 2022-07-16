@@ -1,0 +1,13 @@
+;131:t:nil:t:nil:nil:nil:nil13
+(mu:write 1 mu:std-out ())
+(mu:write (mu:fixnum+ 1 2) mu:std-out ())
+(mu:write (core:eval 1) mu:std-out ())
+(mu:write (core:string= "" "") mu:std-out ())
+(mu:write (core:string= "" "1") mu:std-out ())
+(mu:write (core:string= "1" "1") mu:std-out ())
+(mu:write (core:string= "123" "1") mu:std-out ())
+(mu:write (core:string= "" "ci") mu:std-out ())
+(mu:write (core:string= "ci" "") mu:std-out ())
+(mu:write (core:eval ()) mu:std-out ())
+(mu:write (core:eval 1) mu:std-out ())
+(mu:write (core:eval '(mu:fixnum+ 1 2)) mu:std-out ())

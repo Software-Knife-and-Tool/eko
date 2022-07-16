@@ -1,0 +1,82 @@
+(core::append '(1 2 3) '(4 5 6));(1 2 3 4 5 6)
+(core::append '(1 2 3) ());(1 2 3)
+(core::append () '(1 2 3));(1 2 3)
+(core::append () ());:nil
+(core:dropl '(1 2 3) 0);(1 2 3)
+(core:dropl '(1 2 3) 1);(2 3)
+(core:dropr '(1 2 3) 0);(1 2 3)
+(core:dropr '(1 2 3) 1);(1 2)
+(core:mapc (:lambda (el) el) '(1 2 3));(1 2 3)
+(core:mapc (:lambda (el) el) '(1));(1)
+(core:mapc (:lambda (el) el) ());:nil
+(core:mapcar (:lambda (el) el) '(1 2 3));(1 2 3)
+(core:mapcar (:lambda (el) el) '(1));(1)
+(core:mapcar (:lambda (el) el) ());:nil
+(core:mapl (:lambda (el) el) '(1 2 3));(1 2 3)
+(core:mapl (:lambda (el) el) '(1));(1)
+(core:mapl (:lambda (el) el) ());:nil
+(core:maplist (:lambda (el) el) '(1 2 3));((1 2 3) (2 3) (3))
+(core:maplist (:lambda (el) el) '(1));((1))
+(core:maplist (:lambda (el) el) ());:nil
+(mu:type-of core:1+);:func
+(mu:type-of core:1-);:func
+(mu:type-of core::append);:func
+(mu:type-of core::clone-function);:func
+(mu:type-of core::fn-arity);:func
+(mu:type-of core::fn-form);:func
+(mu:type-of core::fn-frame-id);:func
+(mu:type-of core::fn-extension);:func
+(mu:type-of core::macroexpand-1);:func
+(mu:type-of core:break);:func
+(mu:type-of core:consp);:func
+(mu:type-of core:doublep);:func
+(mu:type-of core:dropl);:func
+(mu:type-of core:dropr);:func
+(mu:type-of core:elt);:func
+(mu:type-of core:error-if);:func
+(mu:type-of core:errorp-unless);:func
+(mu:type-of core:errorp-when);:func
+(mu:type-of core:eval);:func
+(mu:type-of core:exceptionp);:func
+(mu:type-of core:findl-if);:func
+(mu:type-of core:findr-if);:func
+(mu:type-of core:fixnump);:func
+(mu:type-of core:floatp);:func
+(mu:type-of core:foldl);:func
+(mu:type-of core:foldr);:func
+(mu:type-of core:functionp);:func
+(mu:type-of core:last);:func
+(mu:type-of core:lastn);:func
+(mu:type-of core:length);:func
+(mu:type-of core:listp);:func
+(mu:type-of core:macroexpand);:func
+(mu:type-of core:mapc);:func
+(mu:type-of core:mapcar);:func
+(mu:type-of core:mapl);:func
+(mu:type-of core:maplist);:func
+(mu:type-of core:namespacep);:func
+(mu:type-of core:not);:func
+(mu:type-of core:null);:func
+(mu:type-of core:positionl);:func
+(mu:type-of core:positionr);:func
+(mu:type-of core:schar);:func
+(mu:type-of core:streamp);:func
+(mu:type-of core:string);:func
+(mu:type-of core:string-append);:func
+(mu:type-of core:string=);:func
+(mu:type-of core:stringp);:func
+(mu:type-of core:substr);:func
+(mu:type-of core:sv-list);:func
+(mu:type-of core:symbolp);:func
+(mu:type-of core:vectorp);:func
+(mu:type-of core:warn);:func
+(core:foldl (:lambda (el acc) (:if (core:null acc) :nil (core:symbolp el))) :t '(1 2 3));:nil
+(core:foldl (:lambda (el acc) (:if (core:null acc) :nil (core:symbolp el))) :t '(a b c));:t
+(core:foldl (:lambda (el acc) (mu:cons el acc)) () '(1 2 3));(3 2 1)
+(core:foldr (:lambda (x y) (mu:fixnum+ x y)) 0 '(1 2 3));6
+(core:string= "abc" "abc");:t
+(core:string= "abd" "abc");:nil
+(core:stringp "abc");:t
+(core:stringp 1);:nil
+(core:sv-list "abc");(a b c)
+(core:vectorp (mu::view (core:clone-function (:lambda ()) "clone-test-0" () '((mu:write "clone " :nil :nil) "works"))));:t
