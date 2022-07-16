@@ -5,6 +5,8 @@ libmu.so
 build/
 dist/mu-runtime
 *.out
+*.perf
+perf/eko
 release/mu-runtime.dSYM
 dist/eko:*.l
 dist/*.tgz
