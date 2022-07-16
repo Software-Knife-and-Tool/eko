@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>6.1 Mu Runtime Symbols</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style type="text/css">
+  html {
+    font-size: 100%;
+    overflow-y: scroll;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  body {
+    color: #444;
+    font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 1em;
+    margin: auto;
+    max-width: 42em;
+    background: #fefefe;
+  }
+
+  a {
+    color: #0645ad;
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: #0b0080;
+  }
+
+  a:hover {
+    color: #06e;
+  }
+
+  a:active {
+    color: #faa700;
+  }
+
+  a:focus {
+    outline: thin dotted;
+  }
+
+  *::-moz-selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #000;
+  }
+
+  *::selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #000;
+  }
+
+  a::-moz-selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #0645ad;
+  }
+
+  a::selection {
+    background: rgba(255, 255, 0, 0.3);
+    color: #0645ad;
+  }
+
+  p {
+    margin: 1em 0;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #111;
+    line-height: 125%;
+    margin-top: 2em;
+    font-weight: normal;
+  }
+
+  h4, h5, h6 {
+    font-weight: bold;
+  }
+
+  h1 {
+    font-size: 2.5em;
+  }
+
+  h2 {
+    font-size: 2em;
+  }
+
+  h3 {
+    font-size: 1.5em;
+  }
+
+  h4 {
+    font-size: 1.2em;
+  }
+
+  h5 {
+    font-size: 1em;
+  }
+
+  h6 {
+    font-size: 0.9em;
+  }
+
+  blockquote {
+    color: #666666;
+    margin: 0;
+    padding-left: 3em;
+    border-left: 0.5em #EEE solid;
+  }
+
+  hr {
+    display: block;
+    height: 2px;
+    border: 0;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #eee;
+    margin: 1em 0;
+    padding: 0;
+  }
+
+  pre, code, kbd, samp {
+    color: #000;
+    font-family: monospace, monospace;
+    _font-family: 'courier new', monospace;
+    font-size: 0.98em;
+  }
+
+  pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  b, strong {
+    font-weight: bold;
+  }
+
+  dfn {
+    font-style: italic;
+  }
+
+  ins {
+    background: #ff9;
+    color: #000;
+    text-decoration: none;
+  }
+
+  mark {
+    background: #ff0;
+    color: #000;
+    font-style: italic;
+    font-weight: bold;
+  }
+
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  ul, ol {
+    margin: 1em 0;
+    padding: 0 0 0 2em;
+  }
+
+  li p:last-child {
+    margin-bottom: 0;
+  }
+
+  ul ul, ol ol {
+    margin: .3em 0;
+  }
+
+  dl {
+    margin-bottom: 1em;
+  }
+
+  dt {
+    font-weight: bold;
+    margin-bottom: .8em;
+  }
+
+  dd {
+    margin: 0 0 .8em 2em;
+  }
+
+  dd:last-child {
+    margin-bottom: 0;
+  }
+
+  img {
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+    vertical-align: middle;
+  }
+
+  figure {
+    display: block;
+    text-align: center;
+    margin: 1em 0;
+  }
+
+  figure img {
+    border: none;
+    margin: 0 auto;
+  }
+
+  figcaption {
+    font-size: 0.8em;
+    font-style: italic;
+    margin: 0 0 .8em;
+  }
+
+  table {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+
+  table th {
+    padding: .2em 1em;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+  }
+
+  table td {
+    padding: .2em 1em;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    vertical-align: top;
+  }
+
+  .author {
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  @media only screen and (min-width: 480px) {
+    body {
+      font-size: 14px;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    body {
+      font-size: 16px;
+    }
+  }
+  @media print {
+    * {
+      background: transparent !important;
+      color: black !important;
+      filter: none !important;
+      -ms-filter: none !important;
+    }
+
+    body {
+      font-size: 12pt;
+      max-width: 100%;
+    }
+
+    a, a:visited {
+      text-decoration: underline;
+    }
+
+    hr {
+      height: 1px;
+      border: 0;
+      border-bottom: 1px solid black;
+    }
+
+    a[href]:after {
+      content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+      content: " (" attr(title) ")";
+    }
+
+    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+      content: "";
+    }
+
+    pre, blockquote {
+      border: 1px solid #999;
+      padding-right: 1em;
+      page-break-inside: avoid;
+    }
+
+    tr, img {
+      page-break-inside: avoid;
+    }
+
+    img {
+      max-width: 100% !important;
+    }
+
+    @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+  }
+
+    @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+  }
+
+    p, h2, h3 {
+      orphans: 3;
+      widows: 3;
+    }
+
+    h2, h3 {
+      page-break-after: avoid;
+    }
+  }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">6.1 <em>Mu</em> Runtime Symbols</h1>
+</header>
+<h4 id="for-version-0.0.4">for <em>version 0.0.4</em></h4>
+<h4 id="types">Types</h4>
+<hr />
+<p>The <em>libmu</em> library implements a 64 bit staged low tag pointer
+and can accommodate an address space up to 62 bits.</p>
+<p><em>Immediate</em> types fit their values in the tagged pointer,
+immediate strings/keywords are limited to 7 characters. Other types are
+allocated from the heap, and their heap offset is in the upper bits of
+the tagged pointer.</p>
+<p>See <em>src/libmu/core/type.h</em></p>
+<pre><code>  fixnum         62 bit signed integer
+  float          32 bit single float IEEE 754
+  keyword         7 byte keyword symbol
+  string          7 byte string</code></pre>
+<p>Type symbols as returned from <em>type-of</em> are keywords:</p>
+<p>See <em>src/libmu/core/type.h</em></p>
+<pre><code>  char           :char          character
+  cons           :cons          conses and lists
+  double         :double        double preixsion float
+  env            :env           lexical environment
+  exception      :except        conditions and errors
+  fixnum         :fixnum        signed integer, 62 bits
+  float          :float         single precision float
+  function       :func          native and lambdas
+  keyword        :keyword       immediate symbol
+  namespace      :ns            symbol bindings
+  stream         :stream        file, string
+  symbol         :symbol        namespaced Lisp-1
+  vector         :vector        general and specialized</code></pre>
+<h4 id="vectors">Vectors</h4>
+<hr />
+<p>See <em>src/libmu/type/vector.h</em></p>
+<p><em>libmu</em> provides general and specialized (packed) vectors.</p>
+<pre><code>  :t             general
+  :byte          uint8_t
+  :char          UTF-8/ASCII one byte character
+  :double        double float
+  :fixnum        signed integer
+  :float         float</code></pre>
+<h4 id="namespaces-and-symbols">Namespaces and Symbols</h4>
+<hr />
+<p>Namespaces map the symbol reference reader syntax to a symbol.</p>
+<pre><code>  ns:name         an external symbol in the ns namespace
+  ns::name        an internal symbol in the ns namespace
+  name            a symbol in the null (lexical) namespace
+  :name           a keyword symbol</code></pre>
+<h4 id="symbols">Symbols</h4>
+<hr />
+<p>All symbols are immutable and therefore constant. Symbols contain
+only a value.</p>
+<h4 id="constant-symbols">Constant Symbols</h4>
+<p>See <em>src/libmu/core/type.h</em> See
+<em>src/libmu/core/core-env.cc</em> *</p>
+<pre><code>  :t             boolean true
+  :nil           boolean false, empty list
+
+  std-in         stream
+  std-out        stream
+  std-err        stream</code></pre>
+<h4 id="keyword-symbols">Keyword Symbols</h4>
+<p>Keyword symbols evaluate to themselves.</p>
+<h4 id="functionspecial-forms">Function/Special Forms</h4>
+<hr />
+<p>Function/special call forms are compiled by the intrinsic compiler.
+It allows the <em>:lambda</em> special form in the function position,
+which must otherwise be a symbol or an extant function object. All
+arguments to function/special calls are compiled.</p>
+<h4 id="special-forms">Special Forms</h4>
+<p>See <em>src/libmu/core/compile.cc</em></p>
+<p><em>libmu</em> special forms are named by keywords.</p>
+<pre><code>  :const         bind constant symbol
+  :if            conditional
+  :lambda        define fixed-arity function
+  :quote.        quoted form, defer evaluation</code></pre>
+<h4 id="functions-in-the-mu-namespace">Functions in the <em>mu</em>
+Namespace</h4>
+<p><em>libmu</em> function arguments are fixed in arity and type.
+Functions that normally have rest arguments take a list of excess
+arguments as a separate argument. <em>mu:funcall</em>, for example,
+takes a <em>function</em> and a <em>list</em> as arguments.</p>
+<p>External symbols:</p>
+<p>See <em>src/libmu/core/core-env.cc</em></p>
+<pre><code>  boundp     car        cdr        close       cons
+  eofp       eq         eval       except      exp
+  find-ns    fixnum*    fixnum+    fixnum-     fixnum&lt;
+  float*     float+     float-     float/      float&lt;
+  floor      funcall    gc         get-str     intern
+  keyword    keysymp    length     list-sv     logand
+  logor      ns         ns-find    ns-name     ns-syms
+  nth        nthcdr     pow        print       raise
+  rd-byte    read       open       sv-len      sv-ref
+  sv-type    sy-name    sy-ns      sy-val      symbol
+  terpri     trunc      type-of    un-byte     with-ex
+  wr-byte    rd-char    wr-char    un-char     code-ch
+  ch-code</code></pre>
+<p>Internal symbols:</p>
+<pre><code>  clone      compile   context     ctxinfo     bind
+  fn-acsr    fr-get    fr-pop      fr-push     fr-set
+  hp-info    lex-ref   view        version     saveimg
+  suspend    resume</code></pre>
+<h4 id="cc-api">C/C++ API</h4>
+<hr />
+<p>See <em>src/libmu/libmu.h</em></p>
+<pre><code>  uint64_t libmu_t();
+  uint64_t libmu_nil();
+  const char* libmu_version();
+  uint64_t libmu_eval(void*, void*);
+  uint64_t libmu_read_stream(void*, void*);
+  uint64_t libmu_read_cstr(void*, const char*);
+  void libmu_print(void*, void*, void*, bool)
+  void libmu_terpri(void*, void*);
+  void libmu_withException(void*, std::function&lt;void(void*)&gt;);
+  void* libmu_env(int, int, int, char *[], int);</code></pre>
+</body>
+</html>
