@@ -20,9 +20,10 @@ def main():
         "vectors"
     ]
 
-    print '{0:<10}'.format(title),
+    print(f"{title:<10}", end="")
     for i in range(6):
         if counts[i * 2 + 3] != "0":
-            print '{0}({1}/{2})'.format(labels[i], counts[i * 2 + 3], counts[i * 2 + 2]),
-
+            print (f" {labels[i]}: {counts[i * 2 + 3]} {counts[i * 2 + 2]}", end="")
+    print()
+            
 main()

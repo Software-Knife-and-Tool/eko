@@ -27,37 +27,37 @@ perf: prep
 	@for run in {1..$(NTESTS)}; do                   \
            source ./preface-test.sh "(metrics:time () ())" >> nil.out; \
         done
-	@mean.py nil.out > nil-`date +"%m-%d-%y"`.perf 
+	@python3 mean.py nil.out > nil-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                   \
            source ./preface-test.sh "(metrics:time (mu:keysymp :t) ())" >> mu.out; \
         done
-	@mean.py mu.out > mu-`date +"%m-%d-%y"`.perf 
+	@python3 mean.py mu.out > mu-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                   \
            source ./preface-test.sh "(metrics:time (core:funcall mu:fixnum+ '(1 2)) ())" >> core.out; \
         done
-	@mean.py core.out > core-`date +"%m-%d-%y"`.perf 
+	@python3 mean.py core.out > core-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                    \
            source ./preface-test.sh "(metrics:time (core:mapc core:null ''(1 2 3 4 5 6)) ())" >> mapc.out; \
         done
-	@mean.py mapc.out > mapc-`date +"%m-%d-%y"`.perf
+	@python3 mean.py mapc.out > mapc-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
            source ./preface-test.sh '(metrics:time (core:load "./preface:forms-0.l" () ()) ())' >> forms-0.out; \
         done
-	@mean.py forms-0.out > forms-0-`date +"%m-%d-%y"`.perf
+	@python3 mean.py forms-0.out > forms-0-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
            source ./preface-test.sh '(metrics:time (core:load "./preface:forms-1.l" () ()) ())' >> forms-1.out; \
         done
-	@mean.py forms-1.out > forms-1-`date +"%m-%d-%y"`.perf
+	@python3 mean.py forms-1.out > forms-1-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
            source ./preface-test.sh '(metrics:time (core:load "./preface:forms-2.l" () ()) ())' >> forms-2.out; \
         done
-	@mean.py forms-2.out > forms-2-`date +"%m-%d-%y"`.perf
+	@python3 mean.py forms-2.out > forms-2-`date +"%m-%d-%y"`.perf
 
 report:
 	@echo ';;; per test average times (microseconds)'
@@ -78,7 +78,7 @@ report:
 	@echo
 	@echo ';;; per test object consumption'
 	@for i in nil mu core mapc forms-0 forms-1 forms-2; do	\
-	    summary.py $$i $$i.out;				\
+	    python3 summary.py $$i $$i.out;				\
 	done
 
 base:

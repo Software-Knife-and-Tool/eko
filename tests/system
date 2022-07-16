@@ -1,0 +1,7 @@
+(mu:eq :func (mu:type-of system:chdir));:t
+(mu:eq :func (mu:type-of system:cwd));:t
+(mu:eq :func (mu:type-of system:env));:t
+(mu:eq :func (mu:type-of system:exit));:t
+(mu:eq :func (mu:type-of system:logname));:t
+(mu:eq :func (mu:type-of system:system));:t
+(mu:eq :func (mu:type-of system:utimes));:t

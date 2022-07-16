@@ -1,0 +1,45 @@
+#! /bin/bash
+EXEC=../dist/mu-runtime
+
+TMP=/var/tmp
+
+args=("$@")
+opts=("${args[@]:1}")
+
+function run () {
+    echo "$2" > $TMP/expect.$$
+
+    $EXEC -l ../dist/eko:core.l -q '(core:load "./core.l" () ())' -q '(core:terpri mu:std-out)' >  $TMP/result.$$ 2>&1
+
+    if [ $? -eq 0 ]
+    then
+    echo -n $1 ";" $2 ">" `cat $TMP/result.$$` "-- "
+    diff $TMP/expect.$$ $TMP/result.$$ > /dev/null 2>&1
+    if [ $? -eq 0 ]
+    then
+        echo passed
+    else
+        echo failed
+    fi
+    else
+    echo $1 "--" $2 "-- test aborted" "-- " failed
+    fi
+    rm -f $TMP/result.$$ $TMP/expect.$$
+}
+
+rm -f $TMP/test.$$.log
+read -r test < $1
+result=$(echo $test | sed -e "s/^.*;//")
+run $1 "$result" "$2" "$3" >> $TMP/test.$$.log 2>&1
+
+echo
+echo "Test Summary:" $1
+echo `date`
+# echo "versions:" "libmu" `$EXEC -v`
+echo "----------------------------"
+echo -n "total tests:" 1
+echo "     failed:" `grep failed $TMP/test.$$.log | wc -l`
+sed -n -e "/--$/p" $TMP/test.$$.log
+grep failed $TMP/test.$$.log
+rm -f $TMP/test.$$.log $TMP/expect.$$ $TMP/result.$$ $TMP/version.$$
+exit 0
