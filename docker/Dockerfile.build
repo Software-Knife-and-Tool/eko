@@ -1,0 +1,9 @@
+FROM ubuntu:jammy AS env
+
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install build-essential -y
+RUN apt-get install gcc-12 -y
+RUN apt-get install g++-12 -y
+SHELL ["/bin/bash", "--login", "-c"]
+RUN gcc --version
