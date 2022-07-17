@@ -2,13 +2,6 @@
 ;;;  SPDX-License-Identifier: MIT
 
 ;;;
-;;;  common: common lisp functions and types
-;;;
-;;;  common namespace
-;;;
-(core:in-namespace (mu:ns "common" (env:find-ns "preface")))
-
-;;;
 ;;; dotimes macro
 ;;;
 (defmacro dotimes (ctr-list &rest body)

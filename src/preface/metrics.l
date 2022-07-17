@@ -4,11 +4,7 @@
 ;;;
 ;;;  metrics: mu metrics
 ;;;
-;;;  metrics namespace
-;;;
-(core:in-namespace (mu:ns "metrics" (env:find-ns "preface")))
-
-(defmacro metrics:time (form verbosity)
+(defmacro time (form verbosity)
   (let* ((form (core:compile form))
          (zip-2
            (lambda (list-1 list-2)
@@ -65,7 +61,7 @@
          (pr-time start stop before after)
          (list :quote value))))
 
-(defun metrics:room (verbosity)
+(defun room (verbosity)
   (let ((heap (list
                 (list 'conses (env:hp-info :heap :cons))
                 (list 'except (env:hp-info :heap :except))
