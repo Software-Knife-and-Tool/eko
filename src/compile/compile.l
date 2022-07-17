@@ -54,9 +54,9 @@
   (errorp-unless stringp input-path "compile-file: not a pathname")
   (errorp-unless stringp output-path "compile-file: not a pathname")
   (common:with-open-file src input-path :input
-    ((lambda (walk) (walk walk (read src () ())))
-     (lambda (walk form)
-       (cond
-         ((eofp src))
-(t (compile::compile-form form) (walk walk (read src () ()))))))))
+     ((lambda (walk) (walk walk (read src () ())))
+      (lambda (walk form)
+        (cond
+          ((eofp src))
+          (t (compile::compile-form form) (walk walk (read src () ()))))))))
 
