@@ -25,37 +25,37 @@ prep:
 perf: prep
 	@rm -f mu.out perf.out nil.out core.out mapc.out forms-0.out form-1.out forms-2.out
 	@for run in {1..$(NTESTS)}; do                   \
-           source ./preface-test.sh "(metrics:time () ())" >> nil.out; \
+           source ./preface-test.sh "(preface:time () ())" >> nil.out; \
         done
 	@python3 mean.py nil.out > nil-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                   \
-           source ./preface-test.sh "(metrics:time (mu:keysymp :t) ())" >> mu.out; \
+           source ./preface-test.sh "(preface:time (mu:keysymp :t) ())" >> mu.out; \
         done
 	@python3 mean.py mu.out > mu-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                   \
-           source ./preface-test.sh "(metrics:time (core:funcall mu:fixnum+ '(1 2)) ())" >> core.out; \
+           source ./preface-test.sh "(preface:time (core:funcall mu:fixnum+ '(1 2)) ())" >> core.out; \
         done
 	@python3 mean.py core.out > core-`date +"%m-%d-%y"`.perf 
 
 	@for run in {1..$(NTESTS)}; do                    \
-           source ./preface-test.sh "(metrics:time (core:mapc core:null ''(1 2 3 4 5 6)) ())" >> mapc.out; \
+           source ./preface-test.sh "(preface:time (core:mapc core:null ''(1 2 3 4 5 6)) ())" >> mapc.out; \
         done
 	@python3 mean.py mapc.out > mapc-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
-           source ./preface-test.sh '(metrics:time (core:load "./preface:forms-0.l" () ()) ())' >> forms-0.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-0.l" () ()) ())' >> forms-0.out; \
         done
 	@python3 mean.py forms-0.out > forms-0-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
-           source ./preface-test.sh '(metrics:time (core:load "./preface:forms-1.l" () ()) ())' >> forms-1.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-1.l" () ()) ())' >> forms-1.out; \
         done
 	@python3 mean.py forms-1.out > forms-1-`date +"%m-%d-%y"`.perf
 
 	@for run in {1..$(NTESTS)}; do                    \
-           source ./preface-test.sh '(metrics:time (core:load "./preface:forms-2.l" () ()) ())' >> forms-2.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-2.l" () ()) ())' >> forms-2.out; \
         done
 	@python3 mean.py forms-2.out > forms-2-`date +"%m-%d-%y"`.perf
 
@@ -91,7 +91,7 @@ base:
 	@cp forms-2-`date +"%m-%d-%y"`.perf forms-2-base.perf
 
 prof: prep
-	@bash ./preface-test.sh '(metrics:time (core:load "./preface:forms-2.l" () ()) ())'
+	@bash ./preface-test.sh '(preface:time (core:load "./preface:forms-2.l" () ()) ())'
 	@$(LLVMTOOLSDIR)/llvm-profdata show --all-functions --topn=25 default.profraw > profile.report 2>&1
 
 valgrind: memcheck callgrind cachegrind
@@ -103,8 +103,7 @@ memcheck: prep
 		    -l ./eko/eko/eko:core.l	       	                       \
 		    -q '(core:load "./eko/eko/eko:preface.l" () ())'       \
 		    -q "(core:eval (core:compile '(defconst preface::require-path \"./eko/lib-modules\")))" \
-		    -q "(core:eval (core:compile '(preface:require-lib metrics)))"  \
-		    -q "(core:eval (core:compile '(metrics:time (core:load \"./preface:forms-2.l\" () ()) ())))" > memcheck.report 2>&1 || true
+		    -q "(core:eval (core:compile '(preface:time (core:load \"./preface:forms-2.l\" () ()) ())))" > memcheck.report 2>&1 || true
 
 callgrind: prep
 	@valgrind --tool=callgrind 	\
@@ -112,8 +111,7 @@ callgrind: prep
 		    -l ./eko/eko/eko:core.l	       	                       \
 		    -q '(core:load "./eko/eko/eko:preface.l" () ())'       \
 		    -q "(core:eval (core:compile '(defconst preface::require-path \"./eko/lib-modules\")))" \
-		    -q "(core:eval (core:compile '(preface:require-lib metrics)))"  \
-		    -q "(core:eval (core:compile '(metrics:time (core:load \"./preface:forms-2.l\" () ()) ())))" > callgrind.report 2>&1 || true
+		    -q "(core:eval (core:compile '(preface:time (core:load \"./preface:forms-2.l\" () ()) ())))" > callgrind.report 2>&1 || true
 
 	@callgrind_annotate --auto=yes callgrind.out.* >> callgrind.report
 	@rm -f callgrind.out.*
@@ -124,8 +122,7 @@ cachegrind: prep
 		    -l ./eko/eko/eko:core.l	       	                \
 		    -q '(core:load "./eko/eko/eko:preface.l" () ())'    \
 		    -q "(core:eval (core:compile '(defconst preface::require-path \"./eko/lib-modules\")))" \
-		    -q "(core:eval (core:compile '(preface:require-lib metrics)))"  \
-		    -q "(core:eval (core:compile '(metrics:time (core:load \"./preface:forms-2.l\" () ()) ())))" > cachegrind.report 2>&1 || true
+		    -q "(core:eval (core:compile '(preface:time (core:load \"./preface:forms-2.l\" () ()) ())))" > cachegrind.report 2>&1 || true
 
 clean:
 	@rm -rf *-*-*-* *.out *.profraw callgrind.out.* cachegrind.out.* cachegrind.out eko

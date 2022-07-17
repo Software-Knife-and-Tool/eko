@@ -1,4 +1,4 @@
-;:t1:nil:nil3:nil1:t3g1:nil1111315:nil
+;:t1:nil:nil3:nil1:t3g4:nil1111315:nil
 (mu:write (preface:and) mu:std-out ())
 (mu:write (preface:and 1) mu:std-out ())
 (mu:write (preface:and () 1) mu:std-out ())

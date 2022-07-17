@@ -23,10 +23,6 @@ dist:
 	@install -m 644 $(DIST)/eko.l $(BASE)/$(BASE)
 	@install -m 644 $(DIST)/eko:preface.l $(BASE)/$(BASE)
 	@install -m 644 $(DIST)/eko:core.l $(BASE)/$(BASE)
-	@install -m 644 $(DIST)/eko:common.l $(BASE)/lib-modules
-	@install -m 644 $(DIST)/eko:compile.l $(BASE)/lib-modules
-	@install -m 644 $(DIST)/eko:metrics.l $(BASE)/lib-modules
-	@install -m 644 $(DIST)/eko:system.l $(BASE)/lib-modules
 	@install -m 644 $(DIST)/libmu.a $(BASE)/lib
 	@install -m 644 $(DIST)/libmu.so $(BASE)/lib
 	@install -m 755 $(DIST)/mu-runtime $(BASE)/bin

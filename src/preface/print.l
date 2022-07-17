@@ -13,7 +13,7 @@
 ;;;
 ;;; common pprint
 ;;;
-(defun common::spaces (n stream)
+(defun preface::spaces (n stream)
   (errorp-unless fixnump n "")
   (errorp-unless streamp stream "")
   ((lambda (loop) (loop loop n))
@@ -38,7 +38,7 @@
            (list     1 1))))
     ((lambda (loop) (loop loop form 0))
      (lambda (loop form indent)
-       (common::spaces indent stream)
+       (preface::spaces indent stream)
        (cond
          ((consp form)
           (cond
