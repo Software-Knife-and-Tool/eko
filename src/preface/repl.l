@@ -80,7 +80,5 @@
                         (loop loop (read t t ()))))
                   (format t "~A> " (ns-name ns))
                   (loop loop (read t t ())))))))
-    (format t ";;;~%")
-    (format t ";;; Eko Lisp ~A~%" preface::eko-version)
-    (format t ";;; (preface:repl) :h for help~%")
+    (format t ";;; Eko Lisp ~A (preface:repl) :h for help~%" preface::eko-version)
     (repl repl)))
