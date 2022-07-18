@@ -20,9 +20,9 @@
       (:if (mu:eq cmd :h)
          ((:lambda ()
              (core:write "break help:" () ()) (core:terpri ())
-             (core:write :intern "x - exit process" () ()) (core:terpri ())
-             (core:write :intern "r - return from break" () ()) (core:terpri ())
-             (core:write :intern "s - print stack frames" () ()) (core:terpri ())
+             (core:write "x - exit process" () ()) (core:terpri ())
+             (core:write "r - return from break" () ()) (core:terpri ())
+             (core:write "s - print stack frames" () ()) (core:terpri ())
              ()))
          cmd)))
 

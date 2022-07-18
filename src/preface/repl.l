@@ -55,11 +55,12 @@
           (with-ex
               (lambda (ex)  ;; catch exception and break
                 (print-except ex "preface:repl")
-                (break ex))
+                (break ex)
+                (repl repl))
               (lambda ()    ;; main
                 (flet ((loop (loop form)
                         (if (eofp t)
-                            (system:exit 0)
+                            (exit 0)
                             (if (keywordp form)
                                 (cond
                                   ((eq form :h)
