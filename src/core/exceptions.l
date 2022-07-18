@@ -60,7 +60,7 @@
                           ()
                           ((:lambda ()
                              (core:write (core:eval (core:compile form)) () :t) (core:terpri ())
-                             (core:write Q"break> " () ())
+                             (core:write "break> " () ())
                              (loop loop (core:read :t () ()))))))))
          (:if (mu:keysymp form)
               (core::break form except)
