@@ -6,7 +6,7 @@
 ;;;
 ;;; take a type and return a closure.
 ;;;
-(defun preface::state-frame (closure)
+(defun state-frame (closure)
   (errorp-unless symbolp closure "preface::state-frame not a function")
   (let* ((desc (core::fn-extension closure))
          (frame (car (core::lambda-closure desc))))
@@ -29,7 +29,7 @@
 #|
 (defmacro preface::state (type value)
   (errorp-unless symbolp type "preface::state not a type")
-  (letf ((closure (fn &rest args)
+  (flet ((closure (fn &rest args)
                   (let ((state value))
                     (cond
                      ((eq fn :get) state)

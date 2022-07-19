@@ -50,7 +50,7 @@
 ;;; preface repl
 ;;;
 (defun repl (ns)
-  (errorp-unless namespacep ns "preface:repl not a namespace")
+  (errorp-unless namespacep ns "repl: not a namespace")
   (flet ((repl (repl)
           (with-ex
               (lambda (ex)  ;; catch exception and break

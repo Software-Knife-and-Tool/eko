@@ -157,7 +157,7 @@
      (t ())))
 
 (defun preface::reclose (closure)
-  (errorp-unless functionp closure ":reclose not a function")
+  (errorp-unless functionp closure "reclose: not a function")
   (let ((closed (core::lambda-closure (core::fn-extension closure))))
     (errorp-unless (lambda (list) (fixnum< 0 (length list))) closed "reclose environment botch")
     (env:fnv-set (car closed) 0 closure))
