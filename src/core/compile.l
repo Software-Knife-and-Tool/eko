@@ -42,7 +42,7 @@
        env)))
 
 ;;;
-;;; compiling special forms
+;;; compiling special/macro forms
 ;;; 
 ;;;    core::defconst form env => list
 ;;;    core::defmacro form env => list
@@ -51,7 +51,7 @@
 ;;;    core::lambda form env => list
 ;;;    core::quote form env => list
 ;;;
-;;; a special form compiler rewrites a form against
+;;; special/macro form compiler rewrites a form against
 ;;; an environment into something the runtime can execute.
 ;;;
 ;;; arguments:
@@ -59,20 +59,32 @@
 ;;;   form : any form
 ;;;   env  : lexical environment list
 ;;;
-;;; returns: augmented list of frame-descriptors
+;;; returns: mu form
 ;;;
 (mu::intern core::ns :intern "def-symbol"
   (:lambda (symbol value env)
-     (:if (core:uninternedp symbol)
-          (mu::intern
-           (core::read-get-ns)
-           :extern
-           (mu:sy-name symbol)
-           value)
-          ((:lambda (ns name)
+    (:if (core:uninternedp symbol)
+         ((:lambda (sym)
+            (:if sym
+                 (:if (mu:boundp sym)
+                      (core:error sym "def-symbol: symbol already bound")
+                      (mu::intern
+                       (core::read-get-ns)
+                       :extern
+                       (mu:sy-name symbol)
+                       value))
+                 (mu::intern
+                  (core::read-get-ns)
+                  :extern
+                  (mu:sy-name symbol)
+                  value)))
+          (mu:ns-find (core::read-get-ns) :extern (mu:sy-name symbol)))
+         ((:lambda (ns name)
              (mu::intern
-              ns
-              (:if (mu:ns-find ns :extern name) :extern :intern)
+              (core::read-get-ns)
+              (:if (mu:ns-find ns :extern name)
+                   :extern
+                   :intern)
               name
               value))
            (mu:sy-ns symbol)

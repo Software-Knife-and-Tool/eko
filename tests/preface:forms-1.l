@@ -1,4 +1,4 @@
-;:t1:nil:nil3:nil1:t3g4:nil1111315:nil
+;:t1:nil:nil3:nil1:t3g4:nil11113:t
 (mu:write (preface:and) mu:std-out ())
 (mu:write (preface:and 1) mu:std-out ())
 (mu:write (preface:and () 1) mu:std-out ())
@@ -15,6 +15,4 @@
 (mu:write (preface:or 1 ()) mu:std-out ())
 (mu:write (preface:or 1 (mu:fixnum+ 1 2)) mu:std-out ())
 (mu:write (preface:apply mu:fixnum+ '(1 2)) mu:std-out ())
-(defun preface:incf (by) (lambda (n) (mu:fixnum+ n by)))
-(mu:write (preface:funcall (preface:incf 10) 5) mu:std-out ())
-(mu:write (preface:funcall (preface:compose core:null core:null core:null) t) mu:std-out ())
+(mu:write (core:functionp (preface:funcall preface:compose core:null core:null core:null)) mu:std-out ())

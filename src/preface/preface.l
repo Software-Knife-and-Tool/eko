@@ -8,10 +8,10 @@
 ;;;
 (in-namespace (ns "preface" (find-ns "core")))
 
-(defun preface:funcall (fn &rest args)
+(defun funcall (fn &rest args)
   (core:funcall fn args))
 
-(defun preface:format (stream fmt-string &rest args)
+(defun format (stream fmt-string &rest args)
   (core:format stream fmt-string args))
 
 (defun identity (obj) obj)
@@ -144,7 +144,7 @@
 (defun eql (x y)
    (cond
      ((eq x y) :t)
-     ((null (eq (type-of x) (type-of y))) :nil)
+     ((null (eq (type-of x) (type-of y))) nil)
      ((stringp x) (string= x y))
      ((and (vectorp x) (vectorp y))
         (and (eq (vector-type x) (vector-type y))

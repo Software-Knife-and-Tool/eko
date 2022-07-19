@@ -15,5 +15,3 @@
 (preface:or 1 (mu:fixnum+ 1 2))
 (preface:apply mu:fixnum+ '(1 2))
 (core:eval 1)
-(defun preface:incf (by) (lambda (n) (mu:fixnum+ n by)))
-(preface:funcall (preface:incf 10) 5)

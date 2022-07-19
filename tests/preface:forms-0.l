@@ -1,4 +1,4 @@
-;:nil(1)(1 2):nil1(1 . 2):nil1(1 . 2)(1 2)nil:nilconst-11fx-11arg-11add-11:nil33:nil01
+;:nil(1)(1 2):nil1(1 . 2):nil1(1 . 2)(1 2):nil33:nil01
 (mu:write (preface:list) mu:std-out ())
 (mu:write (preface:list 1) mu:std-out ())
 (mu:write (preface:list 1 2) mu:std-out ())
@@ -9,16 +9,6 @@
 (mu:write (preface:append 1) mu:std-out ())
 (mu:write (preface:append '(1) 2) mu:std-out ())
 (mu:write (preface:append '(1) '(2)) mu:std-out ())
-(mu:write (defmacro preface:nil ()) mu:std-out ())
-(mu:write (preface:nil) mu:std-out ())
-(mu:write (defmacro preface:const-1 () 1) mu:std-out ())
-(mu:write (preface:const-1) mu:std-out ())
-(mu:write (defmacro preface:fx-1 () (mu:fixnum+ 0 1)) mu:std-out ())
-(mu:write (preface:fx-1) mu:std-out ())
-(mu:write (defmacro preface:arg-1 (a) a) mu:std-out ())
-(mu:write (preface:arg-1 1) mu:std-out ())
-(mu:write (defmacro preface:add-1 (a) (mu:fixnum+ 1 a)) mu:std-out ())
-(mu:write (preface:add-1 0) mu:std-out ())
 (mu:write (preface:progn) mu:std-out ())
 (mu:write (preface:progn 1 2 3) mu:std-out ())
 (mu:write (preface:progn 1 2 (mu:fixnum+ 1 2)) mu:std-out ())
