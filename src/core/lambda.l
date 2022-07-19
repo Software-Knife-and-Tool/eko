@@ -164,7 +164,8 @@
 ;;;  Resolving body symbols
 ;;;
 ;;; *symbol-frame* looks up *symbol* in a compiled environment.
-;;; If found return a *lexical-descriptor*, otherwise *nil*.
+;;;
+;;; if found return a *lexical-descriptor*, otherwise *nil*.
 ;;;
 ;;; [*lexical-descriptor*] `(frame-id . offset)`
 ;;;

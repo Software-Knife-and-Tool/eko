@@ -1,51 +1,24 @@
 ;;;  SPDX-FileCopyrightText: Copyright 2017-2022 James M. Putnam (putnamjm.design@gmail.com)
 ;;;  SPDX-License-Identifier: MIT
 
-#|
-@s Summary
-<hr><br/>
-<p></p>
-Macro definitions are compiled like lambdas (though eventually with a slighlty
-different lambdaa list including &whole) and macro calls are expanded at compile time.
-<br/>
+;;;
+;;; macro definition, compilation, and expansion
+;;;
 
-@s Macro compilation and expansion
-<hr>
-<p></p>
-***core::macroexpand-1*** *form* ***=>*** *form*
-<p></p>
-***core::macroexpand*** *form* ***=>*** *form*
-<br/><br/>
-`core::macroexpand` and `core::macro-expand-1` expand a macro definition against a form.
-`core::macroexpand` expands a form until it no longer is a macro call, `core::macroexpand-1`
-expands the form just once.
-<br/><br/><p></p>
-(Common Lisp adds an environment argument here, think about why.)
+;;;
+;;; Macro definitions are compiled like lambdas (though eventually with a slighlty
+;;; different lambda list including &whole).
+;;;
+;;; Macro calls are expanded at compile time.
+;;;
+;;; core::macroexpand and core::macro-expand-1 expand a macro definition against a form.
+;;;
+;;; (Common Lisp adds an environment argument here, think about why.)
+;;;
 
-<br/><p></p>
-
-`arguments:`
->
-> `form:` whole form
-
-`returns:` *uncompiled expanded form*
-
-<hr>
-<p></p>
-***core::compile-macro*** *form* *env* ***=>*** *function*
-<br/><br/>
-`core::compile-macro` compiles a macro expander function.
-
-<br/><p></p>
-
-`arguments:`
->
-> `form:` whole form
-> `env;` environment
-
-`returns:` *function*
-|#
-
+;;;
+;;; core::macroexpand-1 expands the form just once.
+;;;
 (mu::intern core::ns :intern "macroexpand-1"
    (:lambda (form)
       (:if (core:consp form)
@@ -61,6 +34,9 @@ expands the form just once.
           (mu:cdr form))
         form)))
 
+;;;
+;;; core:macroexpand: expand a form until it no longer is a macro call
+;;;
 (mu::intern core::ns :extern "macroexpand"
    (:lambda (form)
       ((:lambda (form)
@@ -69,6 +45,11 @@ expands the form just once.
              (core:macroexpand form)))
        (core::macroexpand-1 form))))
 
+;;;
+;;; core::macro-function extracts the macro function from a function or symbol
+;;;
+;;; acts as a predicate
+;;;
 (mu::intern core::ns :extern "macro-function"
    (:lambda (fn)
       (:if (core:functionp fn)
@@ -79,6 +60,11 @@ expands the form just once.
                (core:macro-function (mu:sy-val fn)))
             ()))))
 
+;;;
+;;; core::compile-macro form env => function
+;;;
+;;; core::compile-macro compiles a macro expander function.
+;;;
 (mu::intern core::ns :intern "core-macro"
    (:lambda (form env)
       (:if (core:findl-if (:lambda (el) (core:null (core:symbolp el))) form)
