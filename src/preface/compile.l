@@ -1,7 +1,7 @@
 ;;;  SPDX-FileCopyrightText: Copyright 2017-2022 James M. Putnam (putnamjm.design@gmail.com)
 ;;;  SPDX-License-Identifier: MIT
 
-(defun preface::compile-form (form)
+(defun compile-form (form)
   (flet ((parse (form)
                 (if (consp form)
                     (mapcar compile::compile-form form)
@@ -45,10 +45,10 @@
 (defun compile-file (input-path output-path &rest options)
   (errorp-unless stringp input-path "compile-file: not a pathname")
   (errorp-unless stringp output-path "compile-file: not a pathname")
-  (common:with-open-file src input-path :input
-     ((lambda (walk) (walk walk (read src () ())))
-      (lambda (walk form)
-        (cond
-          ((eofp src))
-          (t (compile::compile-form form) (walk walk (read src () ()))))))))
+  (with-open-file src input-path :input
+     (flet ((walk (walk form)        
+              (cond
+                ((eofp src))
+                (t (compile-form form) (walk walk (read src () ()))))))
+       (walk walk (read src () ())))))
 
