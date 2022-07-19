@@ -87,7 +87,7 @@ To browse the documentation, start with `eko.html`.
 
 ------
 
-The _eko_ runtime _libmu_ is a native code program that must be built for the target CPU architecture. The _eko_ build system requires only a `c++` compiler and some form of the `make` utility. Other tools like `cppcheck`, `clang-tidy`, and `valgrind` are optional.
+The _eko_ runtime _libmu_ is a native code program that must be built for the target CPU architecture. The _eko_ build system requires only a `c++` compiler and some form of the `make` utility. Other tools like `cppcheck`, `clang-tidy`, and `valgrind` are optional. Performance measurement requires some version of `python 3`.
 
 After cloning the _eko_ repository, the _eko_ system can be built and installed with the supplied makefile. There is no `./configure` step as is common in similar projects.
 
