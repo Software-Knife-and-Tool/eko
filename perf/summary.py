@@ -17,9 +17,13 @@ labels = [
     "vectors"
 ]
 
+total_bytes = 0
+total_objs = 0
+
 print(f"{title:<10}", end="")
 for i in range(len(labels)):
-    if counts[i * 2 + 3] != "0":
-        print (f" {labels[i]}: {counts[i * 2 + 3]}/{counts[i * 2 + 2]}", end="")
-        
-print()
+    print (f"{labels[i]}: {counts[i * 2 + 3]}/{counts[i * 2 + 2]}\t", end="")
+    total_objs += int(counts[i * 2 + 3])
+    total_bytes += int(counts[i * 2 + 2])
+
+print (f"total: {total_objs}/{total_bytes}")

@@ -1,0 +1,8 @@
+(let ((foo (lambda () 1))) foo)
+(let ((foo (lambda () 1))) (foo))
+(letf ((foo () foo)) foo)
+(letf ((foo () foo)) (funcall foo))
+(letf ((foo () foo)) (foo))
+(letf* ((a-func () a-func)) a-func)
+(letf ((foo (sym) sym)) (foo foo))
+(letf ((foo (n) (cond ((zerop n) 0) (t (foo (1- n)))))) (foo 5))
