@@ -33,22 +33,18 @@ base:
 	@cp forms-1-`date +"%m-%d-%y"`.perf forms-1-base.perf
 	@cp forms-2-`date +"%m-%d-%y"`.perf forms-2-base.perf
 	@cp forms-3-`date +"%m-%d-%y"`.perf forms-3-base.perf
-	@cp letf-`date +"%m-%d-%y"`.perf letf-base.perf
-	@cp flet-`date +"%m-%d-%y"`.perf flet-base.perf
 
 perf: prep
 	@rm -f *.out
 	@for run in {1..$(NTESTS)}; do		\
-           (source ./preface-test.sh "(preface:time () ())" >> nil.out ); 						\
-           (source ./preface-test.sh "(preface:time (mu:keysymp :t) ())" >> mu.out );					\
-           (source ./preface-test.sh "(preface:time (core:funcall mu:fixnum+ '(1 2)) ())" >> core.out ); 		\
-           (source ./preface-test.sh "(preface:time (core:mapc core:null ''(1 2 3 4 5 6)) ())" >> mapc.out ); 		\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:forms-0.l" () ()) ())' >> forms-0.out ); 	\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:forms-1.l" () ()) ())' >> forms-1.out ); 	\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:forms-2.l" () ()) ())' >> forms-2.out ); 	\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:forms-3.l" () ()) ())' >> forms-3.out ); 	\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:flet.l" () ()) ())' >> flet.out ); 		\
-           (source ./preface-test.sh '(preface:time (core:load "./preface:letf.l" () ()) ())' >> letf.out );		\
+           source ./preface-test.sh "(preface:time () ())" >> nil.out; 						\
+           source ./preface-test.sh "(preface:time (mu:keysymp :t) ())" >> mu.out;				\
+           source ./preface-test.sh "(preface:time (core:funcall mu:fixnum+ '(1 2)) ())" >> core.out; 		\
+           source ./preface-test.sh "(preface:time (core:mapc core:null ''(1 2 3 4 5 6)) ())" >> mapc.out; 	\
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-0.l" () ()) ())' >> forms-0.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-1.l" () ()) ())' >> forms-1.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-2.l" () ()) ())' >> forms-2.out; \
+           source ./preface-test.sh '(preface:time (core:load "./preface:forms-3.l" () ()) ())' >> forms-3.out; \
 	done
 
 	@python3 mean.py mu.out > mu-`date +"%m-%d-%y"`.perf 
@@ -58,8 +54,6 @@ perf: prep
 	@python3 mean.py forms-1.out > forms-1-`date +"%m-%d-%y"`.perf
 	@python3 mean.py forms-2.out > forms-2-`date +"%m-%d-%y"`.perf
 	@python3 mean.py forms-3.out > forms-3-`date +"%m-%d-%y"`.perf
-	@python3 mean.py flet.out > flet-`date +"%m-%d-%y"`.perf
-	@python3 mean.py letf.out > letf-`date +"%m-%d-%y"`.perf
 	@python3 mean.py nil.out > nil-`date +"%m-%d-%y"`.perf 
 
 report:
@@ -80,13 +74,10 @@ report:
 	@diff forms-2-`date +"%m-%d-%y"`.perf forms-2-base.perf | grep -v -- --- | egrep -v '^[123456789]'
 	@echo ';;;' forms-3-`date +"%m-%d-%y"`.perf vs forms-3-base.perf
 	@diff forms-3-`date +"%m-%d-%y"`.perf forms-3-base.perf | grep -v -- --- | egrep -v '^[123456789]'
-	@echo ';;;' flet-`date +"%m-%d-%y"`.perf vs flet-base.perf
-	@diff flet-`date +"%m-%d-%y"`.perf flet-base.perf | grep -v -- --- | egrep -v '^[123456789]'
-	@echo ';;;' letf-`date +"%m-%d-%y"`.perf vs letf-base.perf
-	@diff letf-`date +"%m-%d-%y"`.perf letf-base.perf | grep -v -- --- | egrep -v '^[123456789]'
+
 	@echo
 	@echo ';;; per test object consumption'
-	@for i in nil mu core mapc forms-0 forms-1 forms-2 forms-3 letf flet; do	\
+	@for i in nil mu core mapc forms-0 forms-1 forms-2 forms-3; do	\
 	    python3 summary.py $$i $$i.out;				\
 	done
 
