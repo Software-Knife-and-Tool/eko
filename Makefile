@@ -53,8 +53,7 @@ prof:
 	@$(MAKE) -C ./perf prof --no-print-directory
 
 perf/base:
-	@echo ';;; this will take a while'
-	@NTESTS=50 $(MAKE) -C perf perf base
+	@NTESTS=10 $(MAKE) -C perf perf base
 
 perf/perf:
 	@$(MAKE) -C perf perf
