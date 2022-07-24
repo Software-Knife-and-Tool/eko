@@ -42,13 +42,6 @@ bool Stream::IsType(Env &env, Tag ptr) {
          env.heap->SysClass(env, ptr) == Type::SYS_CLASS::STREAM;
 }
 
-/** * garbage collection **/
-void Stream::GcMark(Env &env, Tag stream) {
-  assert(IsType(env, stream));
-
-  env.heap->GcMark(env, stream);
-}
-
 /** * view of stream object **/
 Tag Stream::View(Env &env, Tag sp) {
   assert(IsType(env, sp));

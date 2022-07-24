@@ -47,10 +47,6 @@ private: /* heap */
     return reinterpret_cast<T *>(heap_addr + offset);
   }
 
-  std::optional<Heap::HeapInfo *> FindFree(size_t, SYS_CLASS);
-
-  size_t FreeHeap();
-
 public:
   system::System &sys; /* system interface */
 
@@ -64,8 +60,6 @@ public:
   std::unique_ptr<std::vector<int>> type_alloc; /* allocated type counts */
   std::unique_ptr<std::vector<int>> type_free;  /* free type counts */
 
-  Heap::HeapInfo *free_cons_list; /* gc caching */
-
 public:
   size_t HeapSize() override { return page_size * n_pages; }
   size_t HeapAlloc() override { return alloc_barrier - heap_addr; }
@@ -74,17 +68,8 @@ public:
     return type_alloc->at(std::to_underlying(sys_class));
   }
 
-  size_t TypeFree(Type::SYS_CLASS sys_class) override {
-    return type_free->at(std::to_underlying(sys_class));
-  }
-
   size_t TypeAlloc() override {
     return std::accumulate(type_alloc->begin(), type_alloc->end(), size_t{0},
-                           std::plus<>());
-  }
-
-  size_t TypeFree() override {
-    return std::accumulate(type_free->begin(), type_free->end(), size_t{0},
                            std::plus<>());
   }
 
@@ -96,10 +81,17 @@ public:
   size_t Room() override;
   size_t Room(Type::SYS_CLASS) override;
 
-  HeapInfo *GetHeapInfo(Tag ptr) override {
+  /** * maps **/
+  HeapInfo *Map(Tag ptr) override {
     return reinterpret_cast<HeapInfo *>(
                HeapAddr(std::to_underlying(ptr) & ~3)) -
            1;
+  }
+
+  void Map(std::function<void(HeapInfo *)> fn) override {
+    heapinfo_iter iter(this);
+    for (auto it = iter.begin(); it != iter.end(); it = ++iter)
+      fn(it);
   }
 
   /** * tag offset is -1 * byte offset */
@@ -108,8 +100,7 @@ public:
     return reinterpret_cast<void *>(heap_addr - offset);
   }
 
-  void ClearRefBits() override;
-
+  size_t HeapInfoTag(HeapInfo *) override;
   std::optional<size_t> Alloc(int, SYS_CLASS) override;
 
   explicit Mapped(system::System &, size_t);
@@ -127,7 +118,7 @@ private: /* image */
 #endif
   };
 
-private: /* iterator */
+public: /* iterator */
   /** * heapinfo iterator **/
   struct heapinfo_iter {
     typedef HeapInfo *iterator;

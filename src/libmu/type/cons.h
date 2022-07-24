@@ -56,7 +56,7 @@ public: /* tag */
   static void Write(Env &, Tag, Tag, bool);
   static Tag Read(Env &, Tag);
 
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
 
 public: /* type model */
   Tag Heap(Env &) override;

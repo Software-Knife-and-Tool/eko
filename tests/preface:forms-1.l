@@ -1,4 +1,4 @@
-;:t1:nil:nil3:nil1:t3g4:nil11113:t
+;:t1:nil:nil3:nil1:t3:nil11113:t
 (mu:write (preface:and) mu:std-out ())
 (mu:write (preface:and 1) mu:std-out ())
 (mu:write (preface:and () 1) mu:std-out ())
@@ -8,7 +8,6 @@
 (mu:write (preface:cond ((mu:eq 1 1) 1)) mu:std-out ())
 (mu:write (preface:cond ((mu:eq 1 2) 2) (:t :t)) mu:std-out ())
 (mu:write (preface:cond ((mu:eq 1 1) (mu:fixnum+ 1 2)) (:t :t)) mu:std-out ())
-(mu:write (preface:gensym) mu:std-out ())
 (mu:write (preface:or) mu:std-out ())
 (mu:write (preface:or 1) mu:std-out ())
 (mu:write (preface:or () 1) mu:std-out ())

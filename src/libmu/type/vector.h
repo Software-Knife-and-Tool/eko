@@ -136,7 +136,7 @@ public: /* Tag */
     return Type::MapClassSymbol(TypeOf(env, vec));
   }
 
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
   static Tag Slice(Env &env, Tag, Tag, Tag);
   static Tag ListToVector(Env &, Tag, Tag);
   static void Write(Env &, Tag, Tag, bool);

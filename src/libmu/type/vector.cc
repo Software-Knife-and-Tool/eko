@@ -300,7 +300,7 @@ Tag Vector::View(Env &env, Tag vector) {
 
 /** * garbage collection **/
 /** * this is so wrong it makees my eyes water **/
-void Vector::GcMark(Env &env, Tag vec) {
+void Vector::Gc(Env &env, Tag vec) {
   assert(IsType(env, vec));
 
   if (!Type::IsDirect(vec)) {
@@ -313,13 +313,19 @@ void Vector::GcMark(Env &env, Tag vec) {
     case SYS_CLASS::BYTE:
       [[fallthrough]];
     case SYS_CLASS::T: {
+      if (Env::IsGcMarked(env, vec))
+        return;
+
+      Env::GcMark(env, vec);
+
       Vector::iter<Tag> iter(env, vec);
       for (auto it = iter.begin(); it != iter.end(); it = ++iter)
-        GcMark(env, *it);
+        Env::Gc(env, *it);
+
       break;
     }
     default:
-      throw std::runtime_error("vector type violation");
+      throw std::runtime_error("vector type botch");
     }
   }
 }

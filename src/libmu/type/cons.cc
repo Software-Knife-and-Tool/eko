@@ -108,7 +108,7 @@ Tag Cons::Heap(Env &env) {
   }
 
   std::optional<size_t> alloc =
-      env.heap->Alloc(sizeof(Layout), SYS_CLASS::CONS);
+      Heap::GcAlloc(env, sizeof(Layout), SYS_CLASS::CONS);
 
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
@@ -137,13 +137,18 @@ Tag Cons::cdr(Env &env, Tag cp) {
 }
 
 /** * garbage collection **/
-void Cons::GcMark(Env &env, Tag ptr) {
+void Cons::Gc(Env &env, Tag ptr) {
   assert(IsType(env, ptr));
 
-  if (!env.heap->IsGcMarked(env, ptr)) {
-    env.heap->GcMark(env, car(env, ptr));
-    env.heap->GcMark(env, cdr(env, ptr));
+  if (Type::IsIndirect(ptr)) {
+    if (Env::IsGcMarked(env, ptr))
+      return;
+
+    Env::GcMark(env, ptr);
   }
+
+  Env::Gc(env, car(env, ptr));
+  Env::Gc(env, cdr(env, ptr));
 }
 
 /** * make a list from a std::vector **/

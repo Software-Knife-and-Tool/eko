@@ -87,7 +87,7 @@ public: /* tag */
 
   static Tag Funcall(Env &, Tag, const std::vector<Tag> &);
 
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
   static void Write(Env &, Tag, Tag, bool);
   static Tag View(Env &, Tag);
   static Tag Clone(Env &, Tag);

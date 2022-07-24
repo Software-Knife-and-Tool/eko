@@ -97,7 +97,7 @@ public: /* tag */
   static Tag Intern(Env &, Tag, SCOPE, Tag, Tag);
   static std::optional<Tag> Map(Env &, Tag, SCOPE, Tag);
 
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
   static void Write(Env &, Tag, Tag, bool);
   static Tag Symbols(Env &, Tag);
   static Tag View(Env &, Tag);

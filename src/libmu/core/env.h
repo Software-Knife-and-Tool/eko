@@ -60,7 +60,7 @@ public: /* mu function definition */
   /** * eval **/
   static Tag Eval(Context &, Tag);
   static Tag Funcall(Context &, Tag, const std::vector<Tag> &);
-  static Tag StateMachine(Context &, Tag);
+  // static Tag StateMachine(Context &, Tag);
 
   /** * print **/
   static void Write(Env &, const std::string &, Tag, bool);
@@ -69,6 +69,15 @@ public: /* mu function definition */
   /** * namespaces **/
   std::optional<Tag> MapNamespace(const std::string &) const;
   void AddNamespace(Tag);
+
+  /** * garbage collection **/
+  static bool IsGcMarked(Env &env, Tag ptr) {
+    return env.heap->IsGcMarked(env, ptr);
+  }
+
+  static void GcMark(Env &env, Tag ptr) { env.heap->GcMark(env, ptr); }
+
+  static void Gc(Env &, Tag);
 
 public:
   std::unique_ptr<Compile> compiler;    /* compiler env */

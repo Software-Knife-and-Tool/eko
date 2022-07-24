@@ -101,7 +101,6 @@ public: /* tag */
   static bool IsEof(Env &, Tag);
   static void Flush(Env &, Tag);
 
-  static void GcMark(Env &, Tag);
   static Tag View(Env &, Tag);
 
 public: /* type model */

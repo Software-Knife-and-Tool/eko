@@ -102,15 +102,18 @@ std::optional<Tag> Namespace::Map(Env &env, Tag ns, SCOPE scope, Tag name) {
 }
 
 /** * garbage collect the namespace **/
-void Namespace::GcMark(Env &env, Tag ns) {
-  assert(IsType(env, ns));
+void Namespace::Gc(Env &env, Tag ptr) {
+  assert(IsType(env, ptr));
 
-  if (!env.heap->IsGcMarked(env, ns)) {
-    env.heap->GcMark(env, name(env, ns));
-    env.heap->GcMark(env, import(env, ns));
-    env.heap->GcMark(env, externs(env, ns));
-    env.heap->GcMark(env, interns(env, ns));
-  }
+  if (Env::IsGcMarked(env, ptr))
+    return;
+
+  Env::GcMark(env, ptr);
+
+  Env::Gc(env, name(env, ptr));
+  Env::Gc(env, import(env, ptr));
+  Env::Gc(env, externs(env, ptr));
+  Env::Gc(env, interns(env, ptr));
 }
 
 /** * view of namespace object **/

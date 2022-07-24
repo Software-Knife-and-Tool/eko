@@ -124,7 +124,7 @@ SYS_CLASS Type::TypeOf(Env &env, Tag ptr) {
   case TAG::DIRECT:
     return SYS_CLASS(DirectClass(ptr));
   case TAG::INDIRECT:
-    return SYS_CLASS(Heap::SysClass(*env.heap->GetHeapInfo(ptr)));
+    return SYS_CLASS(Heap::SysClass(*env.heap->Map(ptr)));
   case TAG::UNUSED:
     [[fallthrough]];
   default:

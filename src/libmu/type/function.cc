@@ -38,10 +38,16 @@ bool Function::IsType(Env &env, Tag ptr) {
 }
 
 /** * garbage collection **/
-void Function::GcMark(Env &env, Tag fn) {
-  assert(IsType(env, fn));
-  (void)fn;
-  (void)env;
+void Function::Gc(Env &env, Tag ptr) {
+  assert(IsType(env, ptr));
+
+  if (Env::IsGcMarked(env, ptr))
+    return;
+
+  Env::GcMark(env, ptr);
+
+  Env::Gc(env, form(env, ptr));
+  Env::Gc(env, extension(env, ptr));
 }
 
 /** * function printer **/
