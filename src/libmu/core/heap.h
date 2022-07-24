@@ -7,7 +7,7 @@
 
 /********
  **
- **  heap.h: heap management
+ **  heap.h: heap parent class
  **
  **/
 #if !defined(LIBMU_CORE_HEAP_H_)
@@ -17,8 +17,10 @@
 #include <cinttypes>
 #include <functional>
 #include <map>
+#include <optional>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -62,7 +64,7 @@ public:
 
   /** * SYS_CLASS from tag **/
   Type::SYS_CLASS SysClass(Env &, Type::Tag ptr) {
-    HeapInfo hinfo = *GetHeapInfo(ptr);
+    HeapInfo hinfo = *Map(ptr);
 
     return SysClass(hinfo);
   }
@@ -78,15 +80,14 @@ public:
                     std::to_underlying(tag));
   }
 
-  /** * get ref bits **/
+  /** * get/set ref bits **/
   static uint8_t RefBits(HeapInfo hinfo) {
     return (std::to_underlying(hinfo) >> 8) & 0xff;
   }
 
-  /** * set ref bits **/
   static HeapInfo RefBits(HeapInfo hinfo, uint8_t refbits) {
-    return HeapInfo((std::to_underlying(hinfo) & ~(uint64_t{0xff} << 8)) |
-                    refbits << 8);
+    auto hi = std::to_underlying(hinfo);
+    return HeapInfo{(hi & ~(uint64_t{0xff} << 8)) | refbits << 8};
   }
 
   /** * get heap object size **/
@@ -113,24 +114,32 @@ public:
   }
 
 public: /* gc */
-  static bool Gc(Env &);
+  std::unordered_map<Type::SYS_CLASS, std::vector<HeapInfo *>> free_lists;
+  size_t nfree;
+
+  static void Gc(Env &);
   static void GcMark(Env &, Type::Tag);
   static bool IsGcMarked(Env &, Type::Tag);
+  static void GcSweep(Env &);
+
+  static std::optional<size_t> GcAlloc(Env &, int, Type::SYS_CLASS);
 
 public: /* derived types */
-  virtual HeapInfo *GetHeapInfo(Type::Tag) = 0;
+  virtual HeapInfo *Map(Type::Tag) = 0;
+  virtual void Map(std::function<void(HeapInfo *)>) = 0;
+
   virtual void *HeapAddr(size_t) = 0;
-  virtual void ClearRefBits() = 0;
+  virtual size_t HeapInfoTag(HeapInfo *hp) = 0;
   virtual std::optional<size_t> Alloc(int, Type::SYS_CLASS) = 0;
   virtual std::optional<Type::Tag> MapString(std::string &) = 0;
+
   virtual Type::Tag InternString(Env &, Type::Tag) = 0;
+
   virtual size_t HeapSize() = 0;
   virtual size_t HeapAlloc() = 0;
-  virtual size_t TypeAlloc(Type::SYS_CLASS) = 0;
-  virtual size_t TypeFree(Type::SYS_CLASS) = 0;
-  virtual size_t TypeAlloc() = 0;
-  virtual size_t TypeFree() = 0;
 
+  virtual size_t TypeAlloc(Type::SYS_CLASS) = 0;
+  virtual size_t TypeAlloc() = 0;
   virtual size_t Room(Type::SYS_CLASS) = 0;
   virtual size_t Room() = 0;
 

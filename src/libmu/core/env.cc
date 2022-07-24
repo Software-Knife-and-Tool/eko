@@ -138,7 +138,7 @@ static const std::vector<Env::MuFunctionDef> kEnvExtFuncTab{
     {"fix", env::ContextFix, 1},
     {"fnv-lex", env::FrameGet, 1},
     {"fnv-set", env::FrameSetVar, 3},
-    {"gc", env::Gc, 1},
+    {"gc", env::Gc, 0},
     {"hp-info", env::HeapInfo, 2},
     {"lex-pop", env::FramePop, 1},
     {"lex-psh", env::FramePush, 1},
@@ -205,6 +205,27 @@ void Env::AddNamespace(Tag ns) {
     namespaces[ns_name] = ns;
     ns_cache->add_ns_cache(ns);
   }
+}
+
+/** * garbage collection **/
+void Env::Gc(Env &env, Tag ptr) {
+
+  std::function<void(Env &, Tag)> noGc = [](Env &, Tag) {};
+  static const std::map<SYS_CLASS, std::function<void(Env &, Tag)>> kGcTypeMap{
+      {SYS_CLASS::CHAR, noGc},
+      {SYS_CLASS::CONS, type::Cons::Gc},
+      {SYS_CLASS::DOUBLE, noGc},
+      {SYS_CLASS::EXCEPTION, type::Exception::Gc},
+      {SYS_CLASS::FIXNUM, noGc},
+      {SYS_CLASS::FLOAT, noGc},
+      {SYS_CLASS::FUNCTION, type::Function::Gc},
+      {SYS_CLASS::NAMESPACE, type::Namespace::Gc},
+      {SYS_CLASS::STREAM, noGc},
+      {SYS_CLASS::SYMBOL, type::Symbol::Gc},
+      {SYS_CLASS::VECTOR, type::Vector::Gc}};
+
+  assert(kGcTypeMap.contains(Type::TypeOf(env, ptr)));
+  kGcTypeMap.at(Type::TypeOf(env, ptr))(env, ptr);
 }
 
 /** * env constructor **/

@@ -125,11 +125,11 @@ Tag Context::CaptureContext() {
 }
 
 void Context::GcFrame(Env &env, Frame &fp) {
-  env.heap->GcMark(env, fp.func);
+  Env::Gc(env, fp.func);
 
   size_t nargs = Fixnum::Int64Of(Function::arity(env, fp.func));
   for (size_t i = 0; i < nargs; ++i)
-    env.heap->GcMark(env, fp.argv[i]);
+    Env::Gc(env, fp.argv[i]);
 }
 
 void Context::GcContext() {

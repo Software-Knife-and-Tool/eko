@@ -58,6 +58,7 @@
                 (break ex)
                 (repl repl))
               (lambda ()    ;; main
+                (gc)
                 (flet ((loop (loop form)
                         (if (eofp t)
                             (exit 0)

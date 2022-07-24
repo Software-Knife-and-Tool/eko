@@ -14,6 +14,7 @@
 #include <cinttypes>
 #include <functional>
 #include <map>
+#include <optional>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -38,45 +39,53 @@ namespace core {
 
 /** * convert tag to uint64_t **/
 void *Heap::LayoutAddr(Env &env, Tag ptr) {
+
   return env.heap->HeapAddr(std::to_underlying(ptr) & ~0x7);
 }
 
 /** * garbage collection **/
+void Heap::Gc(Env &env) {
+
+  env.heap->nfree = 0;
+  env.heap->free_lists.clear();
+  env.heap->Map([](HeapInfo *it) { *it = RefBits(*it, 0); });
+}
+
 void Heap::GcMark(Env &env, Tag ptr) {
+  HeapInfo *hinfo = env.heap->Map(ptr);
 
-  std::function<void(Env &, Tag)> noGc = [](Env &, Tag) {};
-  static const std::map<SYS_CLASS, std::function<void(Env &, Tag)>> kGcTypeMap{
-      {SYS_CLASS::CONS, type::Cons::GcMark},
-      {SYS_CLASS::EXCEPTION, type::Exception::GcMark},
-      {SYS_CLASS::DOUBLE, noGc},
-      {SYS_CLASS::FIXNUM, noGc},
-      {SYS_CLASS::FLOAT, noGc},
-      {SYS_CLASS::FUNCTION, type::Function::GcMark},
-      {SYS_CLASS::NAMESPACE, type::Namespace::GcMark},
-      {SYS_CLASS::STREAM, type::Stream::GcMark},
-      {SYS_CLASS::SYMBOL, type::Symbol::GcMark},
-      {SYS_CLASS::VECTOR, type::Vector::GcMark}};
-
-  assert(kGcTypeMap.contains(Type::TypeOf(env, ptr)));
-  kGcTypeMap.at(Type::TypeOf(env, ptr))(env, ptr);
+  *hinfo = RefBits(*hinfo, 1);
+  env.heap->nfree = 0;
 }
 
-bool Heap::Gc(Env &env) {
-  env.heap->ClearRefBits();
+void Heap::GcSweep(Env &env) {
 
-  for (auto &ns : env.namespaces) {
-    const auto [name, nspc] = ns;
-    GcMark(env, nspc);
-  }
-
-  return true;
+  env.heap->Map([&env](HeapInfo *it) {
+    if (RefBits(*it) == 0) {
+      env.heap->free_lists[SysClass(*it)].push_back(it);
+      env.heap->nfree++;
+    }
+  });
 }
 
-/** * heap object marked? **/
 bool Heap::IsGcMarked(Env &env, Type::Tag ptr) {
-  HeapInfo *hinfo = env.heap->GetHeapInfo(ptr);
+  HeapInfo *hinfo = env.heap->Map(ptr);
 
   return RefBits(*hinfo) == 0 ? false : true;
+}
+
+std::optional<size_t> Heap::GcAlloc(Env &env, int size,
+                                    Type::SYS_CLASS sys_class) {
+
+  if (env.heap->free_lists.contains(sys_class) &&
+      env.heap->free_lists[sys_class].size()) {
+    HeapInfo *free = env.heap->free_lists[sys_class].back();
+
+    env.heap->free_lists[sys_class].pop_back();
+    return env.heap->HeapInfoTag(free);
+  }
+
+  return env.heap->Alloc(size, sys_class);
 }
 
 } /* namespace core */

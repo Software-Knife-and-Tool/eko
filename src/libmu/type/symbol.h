@@ -81,7 +81,7 @@ public: /* tag */
                : Heap::Layout<Layout>(env, symbol)->name;
   }
 
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
   static bool IsBound(Env &, Tag);
   static bool IsUninterned(Env &, Tag);
   static void Write(Env &, Tag, Tag, bool);

@@ -42,7 +42,7 @@ using Type = core::Type;
 
 namespace env {
 
-/** * (::ev-info) => alist **/
+/** * (ev-info) => alist **/
 void EnvInfo(Context &ctx, Frame &fp) {
   Env &env = ctx.env;
   std::vector<Tag> info{};
@@ -65,7 +65,7 @@ void EnvInfo(Context &ctx, Frame &fp) {
   fp.value = Cons::List(env, info);
 }
 
-/** * (heap-info type) => vector **/
+/** * (hp-info type) => vector **/
 void HeapInfo(Context &ctx, Frame &fp) {
   Tag heap = fp.argv[0];
   Tag type = fp.argv[1];
@@ -82,8 +82,7 @@ void HeapInfo(Context &ctx, Frame &fp) {
         return Vector(std::vector<Type::Tag>{
                           Fixnum(-1).tag_, /* figure out per object size */
                           Fixnum(size).tag_,
-                          Fixnum(env.heap->TypeAlloc(sys_class)).tag_,
-                          Fixnum(env.heap->TypeFree(sys_class)).tag_})
+                          Fixnum(env.heap->TypeAlloc(sys_class)).tag_})
             .Heap(env);
       };
 
@@ -101,8 +100,7 @@ void HeapInfo(Context &ctx, Frame &fp) {
     fp.value =
         Vector(std::vector<Type::Tag>{Fixnum(ctx.env.heap->HeapSize()).tag_,
                                       Fixnum(ctx.env.heap->HeapAlloc()).tag_,
-                                      Fixnum(ctx.env.heap->TypeAlloc()).tag_,
-                                      Fixnum(ctx.env.heap->TypeFree()).tag_})
+                                      Fixnum(ctx.env.heap->TypeAlloc()).tag_})
             .Heap(ctx.env);
     break;
   default:
@@ -111,22 +109,20 @@ void HeapInfo(Context &ctx, Frame &fp) {
   }
 }
 
-/** * (gc bool) => fixnum **/
+/** * (gc) => boolean **/
 void Gc(Context &ctx, Frame &fp) {
-  Tag arg = fp.argv[0];
+  Env &env = ctx.env;
 
-  switch (arg) {
-  case Type::NIL:
-  case Type::T:
-    break;
-  default:
-    Exception::Raise(ctx.env, "gc", "error", "type", arg);
-  }
+  env.heap->Gc(env);
 
-  fp.value = Fixnum(ctx.env.heap->Gc(ctx.env)).tag_;
+  for (auto [name, ns] : env.namespaces)
+    Env::Gc(env, ns);
+
+  env.heap->GcSweep(env);
+  fp.value = Fixnum(env.heap->nfree).tag_;
 }
 
-/** * (::saveimg form env => object **/
+/** * (saveimg form env => object **/
 void SaveImage(Context &ctx, Frame &fp) {
   Tag fn = fp.argv[0];
 

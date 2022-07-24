@@ -77,13 +77,18 @@ Tag Symbol::ns(Env &env, Tag symbol) {
 }
 
 /** * garbage collection **/
-void Symbol::GcMark(Env &env, Tag symbol) {
-  assert(IsType(env, symbol));
+void Symbol::Gc(Env &env, Tag ptr) {
+  assert(IsType(env, ptr));
 
-  if (!IsKeyword(symbol) && env.heap->IsGcMarked(env, symbol)) {
-    env.heap->GcMark(env, name(env, symbol));
-    env.heap->GcMark(env, value(env, symbol));
-  }
+  if (IsKeyword(ptr) || Env::IsGcMarked(env, ptr))
+    return;
+
+  Env::GcMark(env, ptr);
+
+  assert(!IsKeyword(ptr));
+
+  Env::Gc(env, name(env, ptr));
+  Env::Gc(env, value(env, ptr));
 }
 
 /** * keywords **/

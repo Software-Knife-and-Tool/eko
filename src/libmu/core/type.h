@@ -88,14 +88,14 @@ public: /* Tag */
     return DIRECT_CLASS((std::to_underlying(ptr) >> 2) & 0x7);
   }
 
-  /** * constant symbol NIL **/
+  /** * constant symbols **/
   static const Tag T =
       Tag(('t' << 8) | ((1 & 0x7) << 5) |
           ((static_cast<uint8_t>(DIRECT_CLASS::SYMBOL) & 0x7) << 2) |
           (static_cast<uint8_t>(TAG::DIRECT) & 0x3));
 
   /** * constant symbol NIL **/
-  static const Tag NIL = /* ASCII NUL */
+  static const Tag NIL =
       Tag(((('l' << 16) | ('i' << 8) | 'n') << 8) | ((3 & 0x7) << 5) |
           ((static_cast<uint8_t>(DIRECT_CLASS::SYMBOL) & 0x7) << 2) |
           (static_cast<uint8_t>(TAG::DIRECT) & 0x3));

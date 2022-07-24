@@ -82,7 +82,7 @@ public: /* type model */
   Tag Heap(Env &) override;
 
 public: /* object */
-  static void GcMark(Env &, Tag);
+  static void Gc(Env &, Tag);
   static Tag View(Env &, Tag);
 
   [[noreturn]] static void Raise(Env &, const std::string &,

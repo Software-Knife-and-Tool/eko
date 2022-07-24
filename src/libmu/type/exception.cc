@@ -42,13 +42,16 @@ Tag Exception::Heap(Env &env) {
 }
 
 /** * garbage collection **/
-void Exception::GcMark(Env &env, Tag exception) {
+void Exception::Gc(Env &env, Tag exception) {
   assert(IsType(env, exception));
 
-  if (!env.heap->IsGcMarked(env, exception)) {
-    env.heap->GcMark(env, source(env, exception));
-    env.heap->GcMark(env, tag(env, exception));
-  }
+  if (Env::IsGcMarked(env, exception))
+    return;
+
+  Env::GcMark(env, exception);
+
+  Env::Gc(env, source(env, exception));
+  Env::Gc(env, tag(env, exception));
 }
 
 /** * make view of exception **/
