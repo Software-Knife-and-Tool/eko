@@ -47,40 +47,40 @@ public:
   Layout function_;
 
 public: /* tag */
-  static bool IsType(Env &, Tag);
+  static bool IsType(Tag);
 
   static bool IsNative(Env &env, Tag fn) {
-    return Symbol::IsType(env, form(env, fn));
+    return Symbol::IsType(form(env, fn));
   }
 
   /* accessors */
   static Tag arity(Env &env, Tag fn) {
-    assert(IsType(env, fn));
+    assert(IsType(fn));
 
     return Heap::Layout<Layout>(env, fn)->arity;
   }
 
   static Tag form(Env &env, Tag fn) {
-    assert(IsType(env, fn));
+    assert(IsType(fn));
 
     return Heap::Layout<Layout>(env, fn)->form;
   }
 
   static Tag set_form(Env &env, Tag fn, Tag form) {
-    assert(IsType(env, fn));
+    assert(IsType(fn));
 
     Heap::Layout<Layout>(env, fn)->form = form;
     return form;
   }
 
   static Tag frame_id(Env &env, Tag fn) {
-    assert(IsType(env, fn));
+    assert(IsType(fn));
 
     return Heap::Layout<Layout>(env, fn)->frame_id;
   }
 
   static Tag extension(Env &env, Tag fn) {
-    assert(IsType(env, fn));
+    assert(IsType(fn));
 
     return Heap::Layout<Layout>(env, fn)->extension;
   }
@@ -106,8 +106,8 @@ public: /* object */
   }
 
   explicit Function(Env &env, Tag id, Tag lambda, Tag form) : Type() {
-    assert(Cons::IsList(env, lambda));
-    assert(Cons::IsList(env, form));
+    assert(Cons::IsList(lambda));
+    assert(Cons::IsList(form));
 
     function_.arity = Fixnum(Cons::Length(env, lambda)).tag_;
     function_.form = form;

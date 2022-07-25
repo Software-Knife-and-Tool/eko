@@ -31,7 +31,7 @@ namespace type {
 /** * print fixnum to stream **/
 void Fixnum::Write(Env &env, Tag fixnum, Tag stream, bool) {
   assert(IsType(fixnum));
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::ostringstream str;
 

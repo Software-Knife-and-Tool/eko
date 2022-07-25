@@ -31,7 +31,7 @@ namespace type {
 /** * print float object to stream **/
 void Float::Write(Env &env, Tag lfloat, Tag stream, bool) {
   assert(IsType(lfloat));
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::ostringstream str;
 
@@ -41,8 +41,8 @@ void Float::Write(Env &env, Tag lfloat, Tag stream, bool) {
 
 /** * print double object to stream **/
 void Double::Write(Env &env, Tag dbl, Tag stream, bool) {
-  assert(IsType(env, dbl));
-  assert(Stream::IsType(env, stream));
+  assert(IsType(dbl));
+  assert(Stream::IsType(stream));
 
   std::ostringstream str;
 

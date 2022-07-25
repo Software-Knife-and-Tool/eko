@@ -42,38 +42,37 @@ private:
   Layout exception_;
 
 public:
-  static inline bool IsType(Env &env, Tag ptr) {
-    return IsIndirect(ptr) &&
-           env.heap->SysClass(env, ptr) == SYS_CLASS::EXCEPTION;
+  static inline bool IsType(Tag ptr) {
+    return IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::EXCEPTION;
   }
 
   /** * accessors **/
   static Tag tag(Env &env, Tag exception) {
-    assert(IsType(env, exception));
+    assert(IsType(exception));
 
     return Heap::Layout<Layout>(env, exception)->tag;
   }
 
   static Tag frame(Env &env, Tag exception) {
-    assert(IsType(env, exception));
+    assert(IsType(exception));
 
     return Heap::Layout<Layout>(env, exception)->frame;
   }
 
   static Tag eclass(Env &env, Tag exception) {
-    assert(IsType(env, exception));
+    assert(IsType(exception));
 
     return Heap::Layout<Layout>(env, exception)->eclass;
   }
 
   static Tag etype(Env &env, Tag exception) {
-    assert(IsType(env, exception));
+    assert(IsType(exception));
 
     return Heap::Layout<Layout>(env, exception)->etype;
   }
 
   static Tag source(Env &env, Tag exception) {
-    assert(IsType(env, exception));
+    assert(IsType(exception));
 
     return Heap::Layout<Layout>(env, exception)->source;
   }

@@ -54,7 +54,7 @@ namespace mu {
 void IsEof(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "eofp", "error", "type", fp.argv[0]);
 
   fp.value = Type::Bool(Stream::IsEof(ctx.env, stream));
@@ -68,7 +68,7 @@ void UnReadByte(Context &ctx, Frame &fp) {
   if (!Fixnum::IsType(ch))
     Exception::Raise(ctx.env, "un-byte", "error", "type", ch);
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "un-byte", "error", "type", fp.argv[1]);
 
   fp.value = Stream::UnReadByte(ctx.env, ch, stream);
@@ -82,7 +82,7 @@ void UnReadChar(Context &ctx, Frame &fp) {
   if (!Char::IsType(ch))
     Exception::Raise(ctx.env, "un-char", "error", "type", ch);
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "un-char", "error", "type", fp.argv[1]);
 
   fp.value = Stream::UnReadChar(ctx.env, ch, stream);
@@ -92,7 +92,7 @@ void UnReadChar(Context &ctx, Frame &fp) {
 void ReadByte(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "rd-byte", "error", "ftype", fp.argv[0]);
 
   fp.value = Stream::ReadByte(ctx.env, stream);
@@ -102,7 +102,7 @@ void ReadByte(Context &ctx, Frame &fp) {
 void ReadChar(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "rd-byte", "error", "ftype", fp.argv[0]);
 
   fp.value = Stream::ReadChar(ctx.env, stream);
@@ -116,7 +116,7 @@ void WriteByte(Context &ctx, Frame &fp) {
   if (!Fixnum::IsType(byte))
     Exception::Raise(ctx.env, "wr-byte", "error", "type", byte);
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "wr-byte", "error", "type", stream);
 
   Stream::WriteByte(ctx.env, byte, stream);
@@ -132,7 +132,7 @@ void WriteChar(Context &ctx, Frame &fp) {
   if (!Char::IsType(ch))
     Exception::Raise(ctx.env, "wr-char", "error", "type", ch);
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "wr-char", "error", "type", stream);
 
   Stream::WriteChar(ctx.env, ch, stream);
@@ -193,7 +193,7 @@ void OpenStream(Context &ctx, Frame &fp) {
 void GetStringStream(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "get-str", "error", "type", stream);
 
   if (!Stream::stream(ctx.env, stream)->IsString())
@@ -207,7 +207,7 @@ void GetStringStream(Context &ctx, Frame &fp) {
 void Close(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "close", "error", "type", stream);
 
   Stream::Close(ctx.env, stream);

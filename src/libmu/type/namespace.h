@@ -53,43 +53,43 @@ private:
 public: /* tag */
   enum class SCOPE : bool { EXTERN, INTERN };
 
-  static bool IsType(Env &, Tag);
+  static bool IsType(Tag);
 
   static Tag NsDesignator(Env &, Tag);
 
   /** * accessors **/
   static Tag name(Env &env, Tag ns) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     return Heap::Layout<Layout>(env, ns)->name;
   }
 
   static Tag import(Env &env, Tag ns) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     return Heap::Layout<Layout>(env, ns)->import;
   }
 
   static Tag externs(Env &env, Tag ns) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     return Heap::Layout<Layout>(env, ns)->externs;
   }
 
   static Tag interns(Env &env, Tag ns) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     return Heap::Layout<Layout>(env, ns)->interns;
   }
 
   static void externs(Env &env, Tag ns, Tag value) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     Heap::Layout<Layout>(env, ns)->externs = value;
   }
 
   static void interns(Env &env, Tag ns, Tag value) {
-    assert(IsType(env, ns));
+    assert(IsType(ns));
 
     Heap::Layout<Layout>(env, ns)->interns = value;
   }

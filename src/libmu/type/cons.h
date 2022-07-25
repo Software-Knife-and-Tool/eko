@@ -44,8 +44,8 @@ public: /* tag */
   static Tag car(Env &, Tag);
   static Tag cdr(Env &, Tag);
 
-  static bool IsType(Env &, Tag);
-  static bool IsList(Env &, Tag);
+  static bool IsType(Tag);
+  static bool IsList(Tag);
 
   static Tag List(Env &, const std::vector<Tag> &);
   static Tag ListDot(Env &, const std::vector<Tag> &);
@@ -80,7 +80,7 @@ public: /** * cons iterator **/
 
     iter(Env &env, Tag cons)
         : cons_(Null(cons) ? end() : cons), current_(cons_), env_(env) {
-      assert(IsList(env, cons));
+      assert(IsList(cons));
     }
 
     iterator begin() { return cons_; }
@@ -94,7 +94,7 @@ public: /** * cons iterator **/
 
       /** * this cleverness coutesy of dotted pairs **/
       Tag cdr = Cons::cdr(env_, current_);
-      current_ = IsType(env_, cdr) ? cdr : Type::NIL;
+      current_ = IsType(cdr) ? cdr : Type::NIL;
 
       return *&current_;
     }

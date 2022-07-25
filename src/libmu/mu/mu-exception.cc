@@ -37,7 +37,7 @@ namespace mu {
 [[noreturn]] void RaiseException(Context &ctx, Frame &fp) {
   Tag exception = fp.argv[0];
 
-  if (!Exception::IsType(ctx.env, exception))
+  if (!Exception::IsType(exception))
     Exception::Raise(ctx.env, "ex-rais", "error", "type", exception);
 
   fp.value = exception;
@@ -70,10 +70,10 @@ void WithException(Context &ctx, Frame &fp) {
 
   auto mark = ctx.dynamic.size();
 
-  if (!Function::IsType(ctx.env, thunk))
+  if (!Function::IsType(thunk))
     Exception::Raise(ctx.env, "with-ex", "error", "type", thunk);
 
-  if (!Function::IsType(ctx.env, handler))
+  if (!Function::IsType(handler))
     Exception::Raise(ctx.env, "with-ex", "error", "type", handler);
 
   Type::Tag value;

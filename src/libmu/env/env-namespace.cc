@@ -63,7 +63,7 @@ void MapNamespace(Context &ctx, Frame &fp) {
 void Namespace(Context &ctx, Frame &fp) {
   Tag ns = fp.argv[0];
 
-  if (!Namespace::IsType(ctx.env, ns))
+  if (!Namespace::IsType(ns))
     Exception::Raise(ctx.env, "ns", "error", "type", ns);
 
   fp.value = ns;

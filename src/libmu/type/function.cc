@@ -32,14 +32,13 @@ namespace type {
 
 using SCOPE = Namespace::SCOPE;
 
-bool Function::IsType(Env &env, Tag ptr) {
-  return Type::IsIndirect(ptr) &&
-         env.heap->SysClass(env, ptr) == SYS_CLASS::FUNCTION;
+bool Function::IsType(Tag ptr) {
+  return Type::IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::FUNCTION;
 }
 
 /** * garbage collection **/
 void Function::Gc(Env &env, Tag ptr) {
-  assert(IsType(env, ptr));
+  assert(IsType(ptr));
 
   if (Env::IsGcMarked(env, ptr))
     return;
@@ -52,11 +51,11 @@ void Function::Gc(Env &env, Tag ptr) {
 
 /** * function printer **/
 void Function::Write(Env &env, Tag fn, Tag stream, bool) {
-  assert(IsType(env, fn));
-  assert(Stream::IsType(env, stream));
+  assert(IsType(fn));
+  assert(Stream::IsType(stream));
 
   std::string type = Vector::StdStringOf(
-      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(env, fn))));
+      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(fn))));
 
   std::string ns =
       Function::IsNative(env, fn)
@@ -95,7 +94,7 @@ void Function::Write(Env &env, Tag fn, Tag stream, bool) {
 
 /** * make view of function **/
 Tag Function::View(Env &env, Tag fn) {
-  assert(IsType(env, fn));
+  assert(IsType(fn));
 
   std::vector<Tag> view = std::vector<Tag>{
       arity(env, fn), form(env, fn), frame_id(env, fn), extension(env, fn)};
@@ -109,7 +108,7 @@ Tag Function::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Tag tag = Entag(alloc.value(), TAG::INDIRECT);
+  Tag tag = Entag(alloc.value(), SYS_CLASS::FUNCTION, TAG::INDIRECT);
   *env.heap->Layout<Layout>(env, tag) = function_;
 
   return tag;
@@ -117,7 +116,7 @@ Tag Function::Heap(Env &env) {
 
 /** * clone function object **/
 Tag Function::Clone(Env &env, Tag view) {
-  assert(Vector::IsType(env, view));
+  assert(Vector::IsType(view));
 
   Function fn = Function();
 

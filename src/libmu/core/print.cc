@@ -53,7 +53,7 @@ namespace {
 void print_as_broket(Env &env, Tag object, Tag stream) {
 
   std::string type = Vector::StdStringOf(
-      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(env, object))));
+      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(object))));
   std::stringstream hexs;
 
   hexs << std::hex << std::to_underlying(object);
@@ -64,7 +64,7 @@ void print_as_broket(Env &env, Tag object, Tag stream) {
 
 /** * print std::string to stream **/
 void Env::Write(Env &env, const std::string &str, Tag stream, bool esc) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   if (esc)
     Write(env, "\"", stream, false);
@@ -90,8 +90,8 @@ void Env::Write(Env &env, Tag object, Tag stream, bool esc) {
                 {SYS_CLASS::SYMBOL, Symbol::Write},
                 {SYS_CLASS::VECTOR, Vector::Write}};
 
-  if (kWriteMap.contains(Type::TypeOf(env, object)))
-    kWriteMap.at(Type::TypeOf(env, object))(env, object, stream, esc);
+  if (kWriteMap.contains(Type::TypeOf(object)))
+    kWriteMap.at(Type::TypeOf(object))(env, object, stream, esc);
   else
     print_as_broket(env, object, stream);
 }

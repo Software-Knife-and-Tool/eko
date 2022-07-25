@@ -44,7 +44,7 @@ public:
 
   static void Write(Env &env, Tag ch, Tag stream, bool esc) {
     assert(IsType(ch));
-    assert(Stream::IsType(env, stream));
+    assert(Stream::IsType(stream));
 
     if (esc)
       Env::Write(env, "#\\", stream, false);

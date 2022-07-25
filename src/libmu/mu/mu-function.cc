@@ -45,10 +45,10 @@ void Funcall(Context &ctx, Frame &fp) {
   Tag func = fp.argv[0];
   Tag args = fp.argv[1];
 
-  if (!(Function::IsType(ctx.env, func)))
+  if (!(Function::IsType(func)))
     Exception::Raise(ctx.env, "funcall", "error", "type", func);
 
-  if (!(Cons::IsList(ctx.env, args)))
+  if (!(Cons::IsList(args)))
     Exception::Raise(ctx.env, "funcall", "error", "type", args);
 
   std::vector<Type::Tag> argv;
@@ -63,7 +63,7 @@ void Funcall(Context &ctx, Frame &fp) {
 void FunctionClone(Context &ctx, Frame &fp) {
   Tag vector = fp.argv[0];
 
-  if (!Vector::IsType(ctx.env, vector))
+  if (!Vector::IsType(vector))
     Exception::Raise(ctx.env, "clone", "error", "type", vector);
 
   fp.value = Function::Clone(ctx.env, vector);
@@ -80,7 +80,7 @@ void FunctionInt(Context &ctx, Frame &fp) {
                        {Symbol::Keyword("form"), Function::form},
                        {Symbol::Keyword("frame"), Function::frame_id}};
 
-  if (!Function::IsType(ctx.env, fn))
+  if (!Function::IsType(fn))
     Exception::Raise(ctx.env, "fn-int", "error", "type", fn);
 
   if (!Symbol::IsKeyword(keyword))

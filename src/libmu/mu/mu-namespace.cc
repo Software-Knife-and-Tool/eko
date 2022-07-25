@@ -47,7 +47,7 @@ namespace mu {
 void NameOfNamespace(Context &ctx, Frame &fp) {
   Tag ns = Namespace::NsDesignator(ctx.env, fp.argv[0]);
 
-  if (!Namespace::IsType(ctx.env, ns))
+  if (!Namespace::IsType(ns))
     Exception::Raise(ctx.env, "name-ns", "error", "type", ns);
 
   fp.value = Namespace::name(ctx.env, ns);
@@ -57,7 +57,7 @@ void NameOfNamespace(Context &ctx, Frame &fp) {
 void ImportOfNamespace(Context &ctx, Frame &fp) {
   Tag ns = Namespace::NsDesignator(ctx.env, fp.argv[0]);
 
-  if (!Namespace::IsType(ctx.env, ns))
+  if (!Namespace::IsType(ns))
     Exception::Raise(ctx.env, "name-ns", "error", "type", ns);
 
   fp.value = Namespace::import(ctx.env, ns);
@@ -68,10 +68,10 @@ void NamespaceSymbols(Context &ctx, Frame &fp) {
   Tag ns = Namespace::NsDesignator(ctx.env, fp.argv[0]);
   Tag type = fp.argv[1];
 
-  if (!Namespace::IsType(ctx.env, ns))
+  if (!Namespace::IsType(ns))
     Exception::Raise(ctx.env, "ns-syms", "error", "type", ns);
 
-  if (!Symbol::IsType(ctx.env, type) || !Symbol::IsKeyword(type))
+  if (!Symbol::IsType(type))
     Exception::Raise(ctx.env, "ns-syms", "error", "type", type);
 
   std::vector<Type::Tag> symbols{};
@@ -90,7 +90,7 @@ void MapNamespace(Context &ctx, Frame &fp) {
   Tag type = fp.argv[1];
   Tag name = fp.argv[2];
 
-  if (!Namespace::IsType(ctx.env, ns))
+  if (!Namespace::IsType(ns))
     Exception::Raise(ctx.env, "ns-find", "error", "type", ns);
 
   if (!Vector::IsTyped(ctx.env, name, Type::SYS_CLASS::CHAR))
@@ -114,7 +114,7 @@ void Intern(Context &ctx, Frame &fp) {
   Tag type = fp.argv[1];
   Tag name = fp.argv[2];
 
-  if (!Namespace::IsType(ctx.env, Namespace::NsDesignator(ctx.env, ns)))
+  if (!Namespace::IsType(Namespace::NsDesignator(ctx.env, ns)))
     Exception::Raise(ctx.env, "intern", "error", "type", ns);
 
   if (!Vector::IsTyped(ctx.env, name, Type::SYS_CLASS::CHAR))
@@ -137,7 +137,7 @@ void InternValue(Context &ctx, Frame &fp) {
   Tag name = fp.argv[2];
   Tag value = fp.argv[3];
 
-  if (!Namespace::IsType(ctx.env, Namespace::NsDesignator(ctx.env, ns)))
+  if (!Namespace::IsType(Namespace::NsDesignator(ctx.env, ns)))
     Exception::Raise(ctx.env, ":intern", "error", "type", ns);
 
   if (!Vector::IsTyped(ctx.env, name, Type::SYS_CLASS::CHAR))
@@ -159,7 +159,7 @@ void MakeNamespace(Context &ctx, Frame &fp) {
   if (!Vector::IsTyped(ctx.env, name, Type::SYS_CLASS::CHAR))
     Exception::Raise(ctx.env, "ns", "error", "type", name);
 
-  if (!Namespace::IsType(ctx.env, import) && !Type::Null(import))
+  if (!Namespace::IsType(import) && !Type::Null(import))
     Exception::Raise(ctx.env, "ns", "error", "type", import);
 
   fp.value = type::Namespace(name, import).Heap(ctx.env);

@@ -37,14 +37,14 @@ using Heap = core::Heap;
 namespace type {
 
 /** * type predicate **/
-bool Stream::IsType(Env &env, Tag ptr) {
+bool Stream::IsType(Tag ptr) {
   return Type::IsIndirect(ptr) &&
-         env.heap->SysClass(env, ptr) == Type::SYS_CLASS::STREAM;
+         Type::IndirectClass(ptr) == Type::SYS_CLASS::STREAM;
 }
 
 /** * view of stream object **/
 Tag Stream::View(Env &env, Tag sp) {
-  assert(IsType(env, sp));
+  assert(IsType(sp));
 
   std::vector<Tag> view =
       std::vector<Tag>{Fixnum(reinterpret_cast<size_t>(stream(env, sp))).tag_};
@@ -54,7 +54,7 @@ Tag Stream::View(Env &env, Tag sp) {
 
 /** * stream eof predicate **/
 bool Stream::IsEof(Env &env, Tag sp) {
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
   assert(stream(env, sp)->IsInput());
 
   return stream(env, sp)->IsEof();
@@ -62,14 +62,14 @@ bool Stream::IsEof(Env &env, Tag sp) {
 
 /** * stream closed predicate **/
 bool Stream::IsClosed(Env &env, Tag sp) {
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
 
   return stream(env, sp)->IsClosed();
 }
 
 /** * flush stream **/
 void Stream::Flush(Env &env, Tag sp) {
-  assert(IsType(env, sp));
+  assert(IsType(sp));
   assert(stream(env, sp)->IsOutput());
 
   stream(env, sp)->Flush();
@@ -78,7 +78,7 @@ void Stream::Flush(Env &env, Tag sp) {
 /** * unread char from stream **/
 Tag Stream::UnReadByte(Env &env, Tag byte, Tag sp) {
   assert(Fixnum::IsType(byte));
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
   assert(stream(env, sp)->IsInput());
 
   stream(env, sp)->UnReadByte(Fixnum::Int64Of(byte));
@@ -89,7 +89,7 @@ Tag Stream::UnReadByte(Env &env, Tag byte, Tag sp) {
 /** * write byte to stream **/
 void Stream::WriteByte(Env &env, Tag byte, Tag sp) {
   assert(Fixnum::IsType(byte));
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
   assert(stream(env, sp)->IsOutput());
 
   stream(env, sp)->WriteByte(static_cast<int>(Fixnum::Int64Of(byte)));
@@ -97,7 +97,7 @@ void Stream::WriteByte(Env &env, Tag byte, Tag sp) {
 
 /** * read byte from stream, returns a fixnum or nil **/
 Tag Stream::ReadByte(Env &env, Tag sp) {
-  assert(IsType(env, sp));
+  assert(IsType(sp));
   assert(stream(env, sp)->IsOutput());
 
   std::optional<int> byte = stream(env, sp)->ReadByte();
@@ -108,7 +108,7 @@ Tag Stream::ReadByte(Env &env, Tag sp) {
 /** * unread char from stream **/
 Tag Stream::UnReadChar(Env &env, Tag ch, Tag sp) {
   assert(Char::IsType(ch));
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
   assert(stream(env, sp)->IsInput());
 
   stream(env, sp)->UnReadByte(static_cast<int64_t>(Char::UInt64Of(ch)));
@@ -119,7 +119,7 @@ Tag Stream::UnReadChar(Env &env, Tag ch, Tag sp) {
 /** * write char to stream **/
 void Stream::WriteChar(Env &env, Tag ch, Tag sp) {
   assert(Char::IsType(ch));
-  assert(Stream::IsType(env, sp));
+  assert(Stream::IsType(sp));
   assert(stream(env, sp)->IsOutput());
 
   stream(env, sp)->WriteByte(static_cast<int>(Char::UInt64Of(ch)));
@@ -127,7 +127,7 @@ void Stream::WriteChar(Env &env, Tag ch, Tag sp) {
 
 /** * read char from stream, returns a char or nil **/
 Tag Stream::ReadChar(Env &env, Tag sp) {
-  assert(IsType(env, sp));
+  assert(IsType(sp));
   assert(stream(env, sp)->IsInput());
 
   std::optional<int> byte = stream(env, sp)->ReadByte();
@@ -137,7 +137,7 @@ Tag Stream::ReadChar(Env &env, Tag sp) {
 
 /** * close stream **/
 Tag Stream::Close(Env &env, Tag sp) {
-  assert(IsType(env, sp));
+  assert(IsType(sp));
 
   stream(env, sp)->Close();
   return T;
@@ -150,7 +150,7 @@ Tag Stream::Heap(Env &env) {
 
   *reinterpret_cast<Layout *>(env.heap->HeapAddr(alloc.value())) = stream_;
 
-  return Entag(alloc.value(), TAG::INDIRECT);
+  return Entag(alloc.value(), SYS_CLASS::STREAM, TAG::INDIRECT);
 }
 
 Stream::Stream(system::Stream *stream) : Type() { stream_.stream = stream; }

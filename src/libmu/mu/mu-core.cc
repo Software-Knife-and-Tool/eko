@@ -44,10 +44,10 @@ using Vector = type::Vector;
 namespace mu {
 
 /** * (type-of object) => symbol **/
-void TypeOf(Context &ctx, Frame &fp) {
+void TypeOf(Context &, Frame &fp) {
   Tag obj = fp.argv[0];
 
-  fp.value = Type::MapClassSymbol(Type::TypeOf(ctx.env, obj));
+  fp.value = Type::MapClassSymbol(Type::TypeOf(obj));
 }
 
 /** * (eq object object) => bool **/

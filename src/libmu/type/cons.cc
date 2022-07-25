@@ -79,12 +79,12 @@ Tag unpack_cdr(Tag tag) {
 
 } /* anonymous namespace */
 
-bool Cons::IsType(Env &env, Tag ptr) {
+bool Cons::IsType(Tag ptr) {
   return (TagOf(ptr) == TAG::CONS) ||
-         (IsIndirect(ptr) && env.heap->SysClass(env, ptr) == SYS_CLASS::CONS);
+         (IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::CONS);
 }
 
-bool Cons::IsList(Env &env, Tag ptr) { return Null(ptr) || IsType(env, ptr); }
+bool Cons::IsList(Tag ptr) { return Null(ptr) || IsType(ptr); }
 
 Tag Cons::Heap(Env &env) {
 
@@ -113,7 +113,7 @@ Tag Cons::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Tag tag = Entag(alloc.value(), TAG::INDIRECT);
+  Tag tag = Entag(alloc.value(), SYS_CLASS::CONS, TAG::INDIRECT);
   *env.heap->Layout<Layout>(env, tag) = cons_;
 
   return tag;
@@ -121,7 +121,7 @@ Tag Cons::Heap(Env &env) {
 
 /** * car/cdr **/
 Tag Cons::car(Env &env, Tag cp) {
-  assert(IsList(env, cp));
+  assert(IsList(cp));
 
   return Null(cp) ? NIL
                   : (Type::IsIndirect(cp) ? Heap::Layout<Layout>(env, cp)->car
@@ -129,7 +129,7 @@ Tag Cons::car(Env &env, Tag cp) {
 }
 
 Tag Cons::cdr(Env &env, Tag cp) {
-  assert(IsList(env, cp));
+  assert(IsList(cp));
 
   return Null(cp) ? NIL
                   : (Type::IsIndirect(cp) ? Heap::Layout<Layout>(env, cp)->cdr
@@ -138,7 +138,7 @@ Tag Cons::cdr(Env &env, Tag cp) {
 
 /** * garbage collection **/
 void Cons::Gc(Env &env, Tag ptr) {
-  assert(IsType(env, ptr));
+  assert(IsType(ptr));
 
   if (Type::IsIndirect(ptr)) {
     if (Env::IsGcMarked(env, ptr))
@@ -182,7 +182,7 @@ Tag Cons::ListDot(Env &env, const std::vector<Tag> &src) {
 
 /** * nth element of list **/
 Tag Cons::Nth(Env &env, Tag list, size_t index) {
-  assert(IsList(env, list));
+  assert(IsList(list));
 
   Cons::iter iter(env, list);
   for (auto it = iter.begin(); it != iter.end(); it = ++iter)
@@ -194,7 +194,7 @@ Tag Cons::Nth(Env &env, Tag list, size_t index) {
 
 /** * list length **/
 size_t Cons::Length(Env &env, Tag list) {
-  assert(IsList(env, list));
+  assert(IsList(list));
 
   if (Null(list))
     return 0;
@@ -204,7 +204,7 @@ size_t Cons::Length(Env &env, Tag list) {
   Cons::iter iter(env, list);
   for (auto it = iter.begin(); it != iter.end(); it = ++iter) {
     len++;
-    if (!IsList(env, Cons::cdr(env, it)))
+    if (!IsList(Cons::cdr(env, it)))
       Exception::Raise(env, "length", "error", "type", list);
   }
 
@@ -213,8 +213,8 @@ size_t Cons::Length(Env &env, Tag list) {
 
 /** * print list to stream **/
 void Cons::Write(Env &env, Tag cons, Tag stream, bool esc) {
-  assert(IsList(env, cons));
-  assert(Stream::IsType(env, stream));
+  assert(IsList(cons));
+  assert(Stream::IsType(stream));
 
   Env::Write(env, "(", stream, false);
 
@@ -226,7 +226,7 @@ void Cons::Write(Env &env, Tag cons, Tag stream, bool esc) {
     Env::Write(env, Cons::car(env, it), stream, esc);
 
     Tag cdr = Cons::cdr(env, it);
-    if (!Cons::IsType(env, cdr) && !Null(cdr)) {
+    if (!Cons::IsType(cdr) && !Null(cdr)) { /* !IsList? */
       Env::Write(env, " . ", stream, false);
       Env::Write(env, cdr, stream, esc);
     }
@@ -237,7 +237,7 @@ void Cons::Write(Env &env, Tag cons, Tag stream, bool esc) {
 
 /** * list parser **/
 Tag Cons::Read(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::vector<Tag> vlist;
 

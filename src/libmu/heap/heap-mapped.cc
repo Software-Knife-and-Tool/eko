@@ -113,7 +113,7 @@ std::optional<size_t> Mapped::Alloc(int nbytes, SYS_CLASS tag) {
   n_objects++;
   type_alloc->at(std::to_underlying(tag))++;
 
-  return heap_addr - reinterpret_cast<size_t>(halloc + size_t{1});
+  return heap_addr - reinterpret_cast<size_t>(halloc + 1);
 }
 
 /** * count up total data bytes in heap **/

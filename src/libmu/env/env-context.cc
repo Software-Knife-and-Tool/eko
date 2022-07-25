@@ -61,10 +61,10 @@ void BindContext(Context &ctx, Frame &fp) {
   Tag fn = fp.argv[0];
   Tag vctx = fp.argv[1];
 
-  if (!Function::IsType(ctx.env, fn))
+  if (!Function::IsType(fn))
     Exception::Raise(ctx.env, "bind", "error", "type", fn);
 
-  if (!Cons::IsList(ctx.env, vctx))
+  if (!Cons::IsList(vctx))
     Exception::Raise(ctx.env, "bind", "error", "type", vctx);
 
   ctx.thread = std::make_unique<std::thread>([&ctx, &fn]() {
@@ -82,7 +82,7 @@ void BindContext(Context &ctx, Frame &fp) {
 void ResumeContext(Context &ctx, Frame &fp) {
   Tag vctx = fp.argv[0];
 
-  if (!Cons::IsType(ctx.env, vctx))
+  if (!Cons::IsType(vctx))
     Exception::Raise(ctx.env, "resume", "error", "type", vctx);
 
   fp.value = Type::T;
@@ -95,14 +95,14 @@ void SuspendContext(Context &, Frame &fp) { fp.value = fp.argv[0]; }
 void ContextFix(Context &ctx, Frame &fp) {
   fp.value = fp.argv[0];
 
-  if (!Function::IsType(ctx.env, fp.value))
+  if (!Function::IsType(fp.value))
     Exception::Raise(ctx.env, "ctx-fix", "error", "type", fp.value);
 
   std::vector<Tag> noargs{};
 
   for (;;) {
     fp.value = Env::Funcall(ctx, fp.value, noargs);
-    if (!type::Function::IsType(ctx.env, fp.value))
+    if (!type::Function::IsType(fp.value))
       break;
   }
 }

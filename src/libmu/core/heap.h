@@ -62,22 +62,9 @@ public:
     return HeapInfo((HeapWords(size) << 16) | std::to_underlying(tag));
   }
 
-  /** * SYS_CLASS from tag **/
-  Type::SYS_CLASS SysClass(Env &, Type::Tag ptr) {
-    HeapInfo hinfo = *Map(ptr);
-
-    return SysClass(hinfo);
-  }
-
   /** * SYS_CLASS from HeapInfo **/
   static Type::SYS_CLASS SysClass(HeapInfo hinfo) {
     return Type::SYS_CLASS(std::to_underlying(hinfo) & 0xff);
-  }
-
-  /** * HeapInfo from HeapInfo, SYS_CLASS **/
-  static HeapInfo SysClass(HeapInfo hinfo, Type::SYS_CLASS tag) {
-    return HeapInfo((std::to_underlying(hinfo) & ~uint64_t{0xff}) |
-                    std::to_underlying(tag));
   }
 
   /** * get/set ref bits **/

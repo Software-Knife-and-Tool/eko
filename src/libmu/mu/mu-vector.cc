@@ -48,7 +48,7 @@ void VectorRef(Context &ctx, Frame &fp) {
   Tag vector = fp.argv[0];
   Tag index = fp.argv[1];
 
-  if (!Vector::IsType(ctx.env, vector))
+  if (!Vector::IsType(vector))
     Exception::Raise(ctx.env, "sv-ref", "error", "vector", vector);
 
   if (!Fixnum::IsType(index))
@@ -87,7 +87,7 @@ void VectorRef(Context &ctx, Frame &fp) {
 void VectorLength(Context &ctx, Frame &fp) {
   Tag vector = fp.argv[0];
 
-  if (!Vector::IsType(ctx.env, vector))
+  if (!Vector::IsType(vector))
     Exception::Raise(ctx.env, "vc-len", "error", "type", vector);
 
   fp.value = Fixnum(Vector::Length(ctx.env, vector)).tag_;
@@ -99,7 +99,7 @@ void VectorSlice(Context &ctx, Frame &fp) {
   Tag offset = fp.argv[1];
   Tag len = fp.argv[2];
 
-  if (!Vector::IsType(ctx.env, vector))
+  if (!Vector::IsType(vector))
     Exception::Raise(ctx.env, "slice", "error", "type", vector);
 
   if (!Fixnum::IsType(offset))
@@ -113,7 +113,7 @@ void VectorSlice(Context &ctx, Frame &fp) {
 
 /** * (sv-type vector) => symbol **/
 void VectorType(Context &ctx, Frame &fp) {
-  if (!Vector::IsType(ctx.env, fp.argv[0]))
+  if (!Vector::IsType(fp.argv[0]))
     Exception::Raise(ctx.env, "sv-type", "error", "type", fp.argv[0]);
 
   fp.value = Vector::VecType(ctx.env, fp.argv[0]);
@@ -124,10 +124,10 @@ void VectorCons(Context &ctx, Frame &fp) {
   Tag type = fp.argv[0];
   Tag list = fp.argv[1];
 
-  if (!Symbol::IsType(ctx.env, type))
+  if (!Symbol::IsType(type))
     Exception::Raise(ctx.env, "list-sv", "error", "type", type);
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "list-sv", "error", "type", list);
 
   fp.value = Vector::ListToVector(ctx.env, type, list);
