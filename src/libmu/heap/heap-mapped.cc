@@ -97,7 +97,7 @@ size_t Mapped::HeapInfoTag(HeapInfo *hp) {
 }
 
 /** * allocate heap object **/
-std::optional<size_t> Mapped::Alloc(int nbytes, SYS_CLASS tag) {
+std::optional<int64_t> Mapped::Alloc(int nbytes, SYS_CLASS tag) {
   // NOLINTNEXTLINE(performance-no-int-to-ptr)
   HeapInfo *halloc = reinterpret_cast<HeapInfo *>(alloc_barrier);
   size_t nalloc = sizeof(HeapInfo) + HeapWords(nbytes) * sizeof(uint64_t);
@@ -113,12 +113,12 @@ std::optional<size_t> Mapped::Alloc(int nbytes, SYS_CLASS tag) {
   n_objects++;
   type_alloc->at(std::to_underlying(tag))++;
 
-  return heap_addr - reinterpret_cast<size_t>(halloc + 1);
+  return heap_addr - reinterpret_cast<int64_t>(halloc + 1);
 }
 
 /** * count up total data bytes in heap **/
-size_t Mapped::Room() {
-  size_t nbytes = 0;
+uint32_t Mapped::Room() {
+  uint32_t nbytes = 0;
 
   heapinfo_iter iter(this);
   for (auto it = iter.begin(); it != iter.end(); it = ++iter)
@@ -128,8 +128,8 @@ size_t Mapped::Room() {
 }
 
 /** * count up total type tag size **/
-size_t Mapped::Room(SYS_CLASS tag) {
-  size_t total_size = 0;
+uint32_t Mapped::Room(SYS_CLASS tag) {
+  uint32_t total_size = 0;
 
   heapinfo_iter iter(this);
   for (auto it = iter.begin(); it != iter.end(); it = ++iter)
@@ -140,8 +140,7 @@ size_t Mapped::Room(SYS_CLASS tag) {
 }
 
 /** * heap object **/
-Mapped::Mapped(system::System &sys, size_t n_pages)
-    : sys(sys), n_pages(n_pages) {
+Mapped::Mapped(system::System &sys, int n_pages) : sys(sys), n_pages(n_pages) {
   const char *heapId = "heap";
 
   page_size = system::System::PAGESIZE;
@@ -153,7 +152,7 @@ Mapped::Mapped(system::System &sys, size_t n_pages)
 
   mapped_file_name = "";
 
-  heap_addr = reinterpret_cast<size_t>(addr.value());
+  heap_addr = reinterpret_cast<uint64_t>(addr.value());
   alloc_barrier = reinterpret_cast<size_t>(addr.value());
   type_free = std::make_unique<std::vector<int>>(16, 0);
   type_alloc = std::make_unique<std::vector<int>>(16, 0);

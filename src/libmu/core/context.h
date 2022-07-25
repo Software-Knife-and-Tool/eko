@@ -44,9 +44,9 @@ public:
   };
 
   struct StackInfo {
-    size_t max;     /* maximum depth */
-    size_t calls;   /* number of inserts */
-    size_t current; /* total depth */
+    size_t max;  /* maximum depth */
+    int calls;   /* number of inserts */
+    int current; /* total depth */
   };
 
   void DynamicContextPush(Frame &fr) {
@@ -78,8 +78,8 @@ public:
 
   void LexicalContextPop(Tag id) { lexical[id].pop_back(); }
 
-  std::optional<Frame *> MapLexicalContext(Tag id, size_t offset) {
-    size_t size = lexical[id].size();
+  std::optional<Frame *> MapLexicalContext(Tag id, int offset) {
+    int size = lexical[id].size();
 
     if (size == 0 || offset >= size)
       return std::nullopt;
@@ -101,8 +101,8 @@ public:
 
   Tag FrameToTag(Frame &);
   Tag FuncIdOf(Tag);
-  Tag NthArgOf(Tag, size_t);
-  void SetNthArgOf(Tag, Tag, size_t);
+  Tag NthArgOf(Tag, int);
+  void SetNthArgOf(Tag, Tag, int);
   Frame *TagToFrame(Tag);
   Tag CaptureContext();
 

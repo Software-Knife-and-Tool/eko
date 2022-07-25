@@ -49,7 +49,7 @@ using Vector = type::Vector;
 namespace core {
 
 Tag Context::FrameToTag(Frame &fp) {
-  size_t asize = Fixnum::Int64Of(Function::arity(env, fp.func));
+  int64_t asize = Fixnum::Int64Of(Function::arity(env, fp.func));
 
   std::vector<Tag> argv(fp.argv, fp.argv + asize);
   return Cons(fp.func, Vector(argv).Heap(env)).Heap(env);
@@ -61,7 +61,7 @@ Tag Context::FuncIdOf(Tag frame) {
   return Cons::car(env, frame);
 }
 
-Tag Context::NthArgOf(Tag frame, size_t nth) {
+Tag Context::NthArgOf(Tag frame, int nth) {
   assert(Cons::IsType(frame));
 
   Tag argv = Cons::cdr(env, frame);
@@ -71,7 +71,7 @@ Tag Context::NthArgOf(Tag frame, size_t nth) {
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void Context::SetNthArgOf(Tag frame, Tag value, size_t nth) {
+void Context::SetNthArgOf(Tag frame, Tag value, int nth) {
   assert(Cons::IsType(frame));
 
   Tag argv = Cons::cdr(env, frame);
@@ -128,8 +128,8 @@ Tag Context::CaptureContext() {
 void Context::GcFrame(Env &env, Frame &fp) {
   Env::Gc(env, fp.func);
 
-  size_t nargs = Fixnum::Int64Of(Function::arity(env, fp.func));
-  for (size_t i = 0; i < nargs; ++i)
+  int64_t nargs = Fixnum::Int64Of(Function::arity(env, fp.func));
+  for (int i = 0; i < nargs; ++i)
     Env::Gc(env, fp.argv[i]);
 }
 
@@ -137,8 +137,8 @@ void Context::GcContext() {
 #if 0
     fp->env.GcMark(fp->func);
 
-    size_t nargs = Fixnum::Int64Of(Function::arity(fp->env, fp->func));
-    for (size_t i = 0; i < nargs; ++i)
+    int64_t nargs = Fixnum::Int64Of(Function::arity(fp->env, fp->func));
+    for (int64_t i = 0; i < nargs; ++i)
       fp->env.GcMark(fp->argv[i]);
 #endif
 }
