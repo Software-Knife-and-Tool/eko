@@ -73,7 +73,7 @@ std::optional<std::pair<Tag, int>> map_lexical_symbol(Env &env, Tag sym) {
     int i = 0;
     for (auto lit = iter.begin(); lit != iter.end(); ++i, lit = ++iter)
       if (Type::Eq(sym, Cons::car(env, lit)))
-        return std::pair<Tag, size_t>{*it, i};
+        return std::pair<Tag, int>{*it, i};
   }
 
   return std::nullopt;

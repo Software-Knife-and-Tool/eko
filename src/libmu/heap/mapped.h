@@ -43,7 +43,7 @@ namespace heap {
 
 class Mapped : public Heap {
 private: /* heap */
-  template <typename T> T *Map(size_t offset) const {
+  template <typename T> T *Map(uint32_t offset) const {
     return reinterpret_cast<T *>(heap_addr + offset);
   }
 
@@ -51,24 +51,26 @@ public:
   system::System &sys; /* system interface */
 
   std::string mapped_file_name; /* mapped file */
-  size_t alloc_barrier;         /* alloc barrier */
-  size_t heap_addr;             /* user virtual address */
-  size_t n_pages;               /* number of pages in the heap */
-  size_t page_size;             /* page size for this heap */
+  uint64_t heap_addr;           /* user virtual address */
+  uint64_t alloc_barrier;       /* alloc barrier */
+  int n_pages;                  /* number of pages in the heap */
+  int page_size;                /* page size for this heap */
 
-  size_t n_objects; /* number of objects in the heap */
+  int n_objects; /* number of objects in the heap */
   std::unique_ptr<std::vector<int>> type_alloc; /* allocated type counts */
   std::unique_ptr<std::vector<int>> type_free;  /* free type counts */
 
 public:
-  size_t HeapSize() override { return page_size * n_pages; }
-  size_t HeapAlloc() override { return alloc_barrier - heap_addr; }
+  uint32_t HeapSize() override { return page_size * n_pages; }
+  uint32_t HeapAlloc() override {
+    return alloc_barrier - reinterpret_cast<uint64_t>(heap_addr);
+  }
 
-  size_t TypeAlloc(Type::SYS_CLASS sys_class) override {
+  int TypeAlloc(Type::SYS_CLASS sys_class) override {
     return type_alloc->at(std::to_underlying(sys_class));
   }
 
-  size_t TypeAlloc() override {
+  int TypeAlloc() override {
     return std::accumulate(type_alloc->begin(), type_alloc->end(), size_t{0},
                            std::plus<>());
   }
@@ -78,8 +80,8 @@ public:
   std::optional<Tag> MapString(std::string &) override;
   Tag InternString(Env &, Tag str) override;
 
-  size_t Room() override;
-  size_t Room(Type::SYS_CLASS) override;
+  uint32_t Room() override;
+  uint32_t Room(Type::SYS_CLASS) override;
 
   /** * maps **/
   HeapInfo *Map(Tag ptr) override {
@@ -93,16 +95,16 @@ public:
       fn(it);
   }
 
-  void *HeapAddr(size_t offset) override {
+  void *HeapAddr(int64_t offset) override {
 
     // NOLINTNEXTLINE(performance-no-int-to-ptr)
     return reinterpret_cast<void *>(heap_addr - offset);
   }
 
   size_t HeapInfoTag(HeapInfo *) override;
-  std::optional<size_t> Alloc(int, SYS_CLASS) override;
+  std::optional<int64_t> Alloc(int, SYS_CLASS) override;
 
-  explicit Mapped(system::System &, size_t);
+  explicit Mapped(system::System &, int);
 
 private: /* image */
   struct CoreImage {

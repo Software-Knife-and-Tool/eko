@@ -119,7 +119,7 @@ void Gc(Context &ctx, Frame &fp) {
     Env::Gc(env, ns);
 
   env.heap->GcSweep(env);
-  fp.value = Fixnum(env.heap->nfree).tag_;
+  fp.value = Type::T;
 }
 
 /** * (saveimg form env => object **/

@@ -46,7 +46,6 @@ void *Heap::LayoutAddr(Env &env, Tag ptr) {
 /** * garbage collection **/
 void Heap::Gc(Env &env) {
 
-  env.heap->nfree = 0;
   env.heap->free_lists.clear();
   env.heap->Map([](HeapInfo *it) { *it = RefBits(*it, 0); });
 }
@@ -55,16 +54,13 @@ void Heap::GcMark(Env &env, Tag ptr) {
   HeapInfo *hinfo = env.heap->Map(ptr);
 
   *hinfo = RefBits(*hinfo, 1);
-  env.heap->nfree = 0;
 }
 
 void Heap::GcSweep(Env &env) {
 
   env.heap->Map([&env](HeapInfo *it) {
-    if (RefBits(*it) == 0) {
+    if (RefBits(*it) == 0)
       env.heap->free_lists[SysClass(*it)].push_back(it);
-      env.heap->nfree++;
-    }
   });
 }
 
@@ -74,8 +70,8 @@ bool Heap::IsGcMarked(Env &env, Type::Tag ptr) {
   return RefBits(*hinfo) == 0 ? false : true;
 }
 
-std::optional<size_t> Heap::GcAlloc(Env &env, int size,
-                                    Type::SYS_CLASS sys_class) {
+std::optional<int> Heap::GcAlloc(Env &env, int size,
+                                 Type::SYS_CLASS sys_class) {
 
   if (env.heap->free_lists.contains(sys_class) &&
       env.heap->free_lists[sys_class].size()) {

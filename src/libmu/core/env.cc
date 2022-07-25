@@ -234,7 +234,7 @@ Env::Env(system::System &env_sys) : sys(env_sys) {
 
   // need to get number of pages from command line or process env;
   // -= runtime configuration needs thought =-
-  heap = std::make_unique<heap::Mapped>(env_sys, size_t{1024});
+  heap = std::make_unique<heap::Mapped>(env_sys, 1024);
 
   readtable = std::make_unique<ReadTable>();
   compiler = std::make_unique<Compile>();
