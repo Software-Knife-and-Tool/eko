@@ -57,7 +57,7 @@ uint64_t mu_read_stream(void *ctx, uint64_t stream) {
     stream =
         std::to_underlying(Symbol::value(ctxt->env, ctxt->env.standard_input));
 
-  if (!Stream::IsType(ctxt->env, Tag(stream))) {
+  if (!Stream::IsType(Tag(stream))) {
     throw std::runtime_error("stream type\n");
   }
 

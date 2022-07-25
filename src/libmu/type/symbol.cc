@@ -62,9 +62,9 @@ Tag name_of(Env &env, const std::string &symbol, const std::string &sep) {
 
 } /* anonymous namespace */
 
-bool Symbol::IsType(Env &env, Tag ptr) {
+bool Symbol::IsType(Tag ptr) {
   return IsKeyword(ptr) ||
-         (IsIndirect(ptr) && env.heap->SysClass(env, ptr) == SYS_CLASS::SYMBOL);
+         (IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::SYMBOL);
 }
 
 Tag Symbol::ns(Env &env, Tag symbol) {
@@ -78,7 +78,7 @@ Tag Symbol::ns(Env &env, Tag symbol) {
 
 /** * garbage collection **/
 void Symbol::Gc(Env &env, Tag ptr) {
-  assert(IsType(env, ptr));
+  assert(IsType(ptr));
 
   if (IsKeyword(ptr) || Env::IsGcMarked(env, ptr))
     return;
@@ -102,14 +102,14 @@ Tag Symbol::Keyword(const std::string &name) {
 
 /** * is symbol bound to a value? */
 bool Symbol::IsBound(Env &env, Tag sym) {
-  assert(IsType(env, sym));
+  assert(IsType(sym));
 
   return IsKeyword(sym) || !Eq(value(env, sym), UNBOUND);
 }
 
 /** * is symbol not interned? */
 bool Symbol::IsUninterned(Env &env, Tag sym) {
-  assert(IsType(env, sym));
+  assert(IsType(sym));
 
   if (IsKeyword(sym))
     return false;
@@ -119,8 +119,8 @@ bool Symbol::IsUninterned(Env &env, Tag sym) {
 
 /** * print symbol to stream **/
 void Symbol::Write(Env &env, Tag sym, Tag stream, bool esc) {
-  assert(IsType(env, sym));
-  assert(Stream::IsType(env, stream));
+  assert(IsType(sym));
+  assert(Stream::IsType(stream));
 
   if (IsKeyword(sym)) {
     Env::Write(env, ":", stream, false);
@@ -188,7 +188,7 @@ Tag Symbol::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Tag tag = Entag(alloc.value(), TAG::INDIRECT);
+  Tag tag = Entag(alloc.value(), SYS_CLASS::SYMBOL, TAG::INDIRECT);
   *env.heap->Layout<Layout>(env, tag) = symbol_;
 
   return tag;

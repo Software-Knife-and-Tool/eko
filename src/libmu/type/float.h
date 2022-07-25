@@ -76,12 +76,12 @@ public:
   Layout layout_;
 
 public: /* tag */
-  static inline bool IsType(Env &env, Tag ptr) {
-    return IsIndirect(ptr) && env.heap->SysClass(env, ptr) == SYS_CLASS::DOUBLE;
+  static inline bool IsType(Tag ptr) {
+    return IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::DOUBLE;
   }
 
   static double DoubleOf(Env &env, Tag dbl) {
-    assert(IsType(env, dbl));
+    assert(IsType(dbl));
 
     return *(Heap::Layout<double>(env, dbl));
   }
@@ -98,7 +98,7 @@ public: /* type model */
     Layout *layout = reinterpret_cast<Layout *>(alloc.value());
 
     layout->dbl = layout_.dbl;
-    return Entag(alloc.value(), TAG::INDIRECT);
+    return Entag(alloc.value(), SYS_CLASS::DOUBLE, TAG::INDIRECT);
   }
 
 public: /* object */

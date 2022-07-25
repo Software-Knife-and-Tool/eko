@@ -45,7 +45,7 @@ private:
 public: /* tag */
   Heap::HeapInfo heapinfo() { return heapinfo_; }
 
-  static bool IsType(Env &, Tag);
+  static bool IsType(Tag);
 
   /* Keywords */
   static inline bool IsKeyword(Tag ptr) {
@@ -59,21 +59,21 @@ public: /* tag */
   static Tag ns(Env &, Tag);
 
   static Tag value(Env &env, Tag symbol) {
-    assert(IsType(env, symbol));
+    assert(IsType(symbol));
 
     return IsKeyword(symbol) ? symbol
                              : Heap::Layout<Layout>(env, symbol)->value;
   }
 
   static Tag set_value(Env &env, Tag symbol, Tag value) {
-    assert(IsType(env, symbol));
+    assert(IsType(symbol));
 
     return IsKeyword(symbol) ? symbol
                              : Heap::Layout<Layout>(env, symbol)->value = value;
   }
 
   static Tag name(Env &env, Tag symbol) {
-    assert(IsType(env, symbol));
+    assert(IsType(symbol));
 
     return IsKeyword(symbol)
                ? MakeDirect(DirectData(symbol), DirectSize(symbol),

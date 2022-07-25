@@ -83,19 +83,18 @@ public:
 
   /** * maps **/
   HeapInfo *Map(Tag ptr) override {
-    return reinterpret_cast<HeapInfo *>(
-               HeapAddr(std::to_underlying(ptr) & ~3)) -
-           1;
+    return reinterpret_cast<HeapInfo *>(HeapAddr(Type::IndirectData(ptr) - 1));
   }
 
   void Map(std::function<void(HeapInfo *)> fn) override {
+
     heapinfo_iter iter(this);
     for (auto it = iter.begin(); it != iter.end(); it = ++iter)
       fn(it);
   }
 
-  /** * tag offset is -1 * byte offset */
   void *HeapAddr(size_t offset) override {
+
     // NOLINTNEXTLINE(performance-no-int-to-ptr)
     return reinterpret_cast<void *>(heap_addr - offset);
   }

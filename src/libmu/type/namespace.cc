@@ -52,21 +52,20 @@ Tag hash_id(Env &env, Tag str) {
 
 } /* anonymous namespace */
 
-bool Namespace::IsType(Env &env, Tag ptr) {
-  return IsIndirect(ptr) &&
-         env.heap->SysClass(env, ptr) == SYS_CLASS::NAMESPACE;
+bool Namespace::IsType(Tag ptr) {
+  return IsIndirect(ptr) && IndirectClass(ptr) == SYS_CLASS::NAMESPACE;
 }
 
 /** * resolve namespace designator **/
 Tag Namespace::NsDesignator(Env &env, Tag ns) {
-  assert(IsType(env, ns) || Null(ns));
+  assert(IsType(ns) || Null(ns));
 
   return Null(ns) ? env.uninterned : ns;
 }
 
 /** * find symbol in namespace externs **/
 std::optional<Tag> Namespace::Map(Env &env, Tag ns, SCOPE scope, Tag name) {
-  assert(IsType(env, ns));
+  assert(IsType(ns));
   assert(Vector::IsTyped(env, name, SYS_CLASS::CHAR));
 
   switch (scope) {
@@ -103,7 +102,7 @@ std::optional<Tag> Namespace::Map(Env &env, Tag ns, SCOPE scope, Tag name) {
 
 /** * garbage collect the namespace **/
 void Namespace::Gc(Env &env, Tag ptr) {
-  assert(IsType(env, ptr));
+  assert(IsType(ptr));
 
   if (Env::IsGcMarked(env, ptr))
     return;
@@ -118,7 +117,7 @@ void Namespace::Gc(Env &env, Tag ptr) {
 
 /** * view of namespace object **/
 Tag Namespace::View(Env &env, Tag ns) {
-  assert(IsType(env, ns));
+  assert(IsType(ns));
 
   std::vector<Tag> view =
       std::vector<Tag>{name(env, ns), Fixnum(0).tag_, Fixnum(1).tag_};
@@ -128,7 +127,7 @@ Tag Namespace::View(Env &env, Tag ns) {
 
 /** * intern symbol in namespace **/
 Tag Namespace::Intern(Env &env, Tag nsd, SCOPE scope, Tag name, Tag value) {
-  assert(IsType(env, nsd) || Null(nsd));
+  assert(IsType(nsd) || Null(nsd));
   assert(Vector::IsTyped(env, name, SYS_CLASS::CHAR));
 
   Tag ns = NsDesignator(env, nsd);
@@ -159,12 +158,12 @@ Tag Namespace::Intern(Env &env, Tag nsd, SCOPE scope, Tag name, Tag value) {
 
 /** * print namespace **/
 void Namespace::Write(Env &env, Tag nsd, Tag stream, bool) {
-  assert(IsType(env, nsd) || Null(nsd));
-  assert(Stream::IsType(env, stream));
+  assert(IsType(nsd) || Null(nsd));
+  assert(Stream::IsType(stream));
 
   Tag ns = NsDesignator(env, nsd);
   std::string type = Vector::StdStringOf(
-      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(env, ns))));
+      env, Symbol::name(env, Type::MapClassSymbol(Type::TypeOf(ns))));
 
   std::string name = Null(Namespace::name(env, ns))
                          ? "uninterned"
@@ -183,7 +182,8 @@ Tag Namespace::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Tag tag = Entag(alloc.value(), TAG::INDIRECT);
+  Tag tag = Entag(alloc.value(), SYS_CLASS::NAMESPACE, TAG::INDIRECT);
+
   *env.heap->Layout<Layout>(env, tag) = namespace_;
 
   return tag;

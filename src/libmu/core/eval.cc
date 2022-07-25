@@ -51,7 +51,7 @@ using Frame = Context::Frame;
 
 /** * call function with argument vector **/
 Tag Env::Funcall(Context &ctx, Tag func, const std::vector<Tag> &argv) {
-  assert(Function::IsType(ctx.env, func));
+  assert(Function::IsType(func));
 
   Env &env = ctx.env;
   size_t nreqs = Fixnum::Int64Of(Function::arity(env, func));
@@ -66,7 +66,7 @@ Tag Env::Funcall(Context &ctx, Tag func, const std::vector<Tag> &argv) {
   Frame fp = Frame(func, const_cast<Tag *>(argv.data()));
   Tag fn = Function::form(env, func);
 
-  if (Symbol::IsType(env, fn)) {
+  if (Symbol::IsType(fn)) {
     ctx.DynamicContextPush(fp);
     env.fn_cache->at(fn)(ctx, fp);
     ctx.DynamicContextPop();
@@ -74,7 +74,7 @@ Tag Env::Funcall(Context &ctx, Tag func, const std::vector<Tag> &argv) {
     return fp.value;
   }
 
-  if (!Cons::IsType(env, fn))
+  if (!Cons::IsType(fn))
     throw std::runtime_error("funcall type");
 
   ctx.DynamicContextPush(fp);
@@ -99,19 +99,19 @@ Tag Env::Funcall(Context &ctx, Tag func, const std::vector<Tag> &argv) {
 Tag Env::Eval(Context &ctx, Tag form) {
   Env &env = ctx.env;
 
-  if (Symbol::IsType(ctx.env, form)) {
+  if (Symbol::IsType(form)) {
     if (!Symbol::IsBound(env, form))
       Exception::Raise(env, "eval", "error", "unbound", form);
 
     return Symbol::value(env, form);
   }
 
-  if (!Cons::IsType(env, form))
+  if (!Cons::IsType(form))
     return form;
 
   Tag fn = Cons::car(env, form);
 
-  if (Symbol::IsType(env, fn)) {
+  if (Symbol::IsType(fn)) {
     if (Type::Eq(fn, Symbol::Keyword("quote")))
       return Cons::Nth(env, form, 1);
 
@@ -126,11 +126,11 @@ Tag Env::Eval(Context &ctx, Tag form) {
       Exception::Raise(env, "eval", "error", "unbound", fn);
 
     fn = Symbol::value(env, fn);
-  } else if (Cons::IsType(env, form)) {
+  } else if (Cons::IsType(form)) {
     fn = Eval(ctx, fn);
   }
 
-  if (!Function::IsType(env, fn))
+  if (!Function::IsType(fn))
     Exception::Raise(env, "eval", "error", "type", fn);
 
   Tag args = Cons::cdr(env, form);

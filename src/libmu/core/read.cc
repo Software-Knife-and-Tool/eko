@@ -62,7 +62,7 @@ bool is_char_syntax_char(Tag ch, SYNTAX_CHAR syntax_char) {
 
 /** * read atom **/
 std::string read_atom(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::string string{};
 
@@ -113,7 +113,7 @@ std::optional<Tag> parse_number(Env &env, const std::string &str) {
 
 /** * read radixed fixnum from stream **/
 Tag radix_fixnum(Env &env, int radix, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::string str = read_atom(env, stream);
 
@@ -141,7 +141,7 @@ Tag radix_fixnum(Env &env, int radix, Tag stream) {
 
 /** * absorb whitespace until eof **/
 bool Env::ReadWSUntilEof(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   Tag ch;
 
@@ -162,7 +162,7 @@ bool Env::ReadWSUntilEof(Env &env, Tag stream) {
 
 /** * read form **/
 Tag Env::Read(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   if (!ReadWSUntilEof(env, stream))
     return Type::NIL;
@@ -182,7 +182,7 @@ Tag Env::Read(Env &env, Tag stream) {
       return ReadTable::MakeSyntax(ch);
     case SYNTAX_CHAR::QUOTE: { /* quote syntax */
       Tag quoted = Read(env, stream);
-      return Symbol::IsType(env, quoted) || Cons::IsType(env, quoted)
+      return Symbol::IsType(quoted) || Cons::IsType(quoted)
                  ? Cons::List(
                        env, std::vector<Tag>{Symbol::Keyword("quote"), quoted})
                  : quoted;

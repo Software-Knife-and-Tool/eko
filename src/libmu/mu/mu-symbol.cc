@@ -41,7 +41,7 @@ namespace mu {
 void SymbolValue(Context &ctx, Frame &fp) {
   Tag symbol = fp.argv[0];
 
-  if (!Symbol::IsType(ctx.env, symbol))
+  if (!Symbol::IsType(symbol))
     Exception::Raise(ctx.env, "sy-val", "error", "type", symbol);
 
   if (!Symbol::IsBound(ctx.env, symbol))
@@ -54,7 +54,7 @@ void SymbolValue(Context &ctx, Frame &fp) {
 void SymbolName(Context &ctx, Frame &fp) {
   Tag symbol = fp.argv[0];
 
-  if (!Symbol::IsType(ctx.env, symbol))
+  if (!Symbol::IsType(symbol))
     Exception::Raise(ctx.env, "sy-name", "error", "type", symbol);
 
   fp.value = Symbol::name(ctx.env, symbol);
@@ -64,7 +64,7 @@ void SymbolName(Context &ctx, Frame &fp) {
 void SymbolNamespace(Context &ctx, Frame &fp) {
   Tag symbol = fp.argv[0];
 
-  if (!Symbol::IsType(ctx.env, symbol))
+  if (!Symbol::IsType(symbol))
     Exception::Raise(ctx.env, "sy-ns", "error", "type", symbol);
 
   fp.value = Symbol::ns(ctx.env, symbol);

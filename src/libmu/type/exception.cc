@@ -35,7 +35,7 @@ Tag Exception::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Tag tag = Entag(alloc.value(), TAG::INDIRECT);
+  Tag tag = Entag(alloc.value(), SYS_CLASS::EXCEPTION, TAG::INDIRECT);
   *env.heap->Layout<Layout>(env, tag) = exception_;
 
   return tag;
@@ -43,7 +43,7 @@ Tag Exception::Heap(Env &env) {
 
 /** * garbage collection **/
 void Exception::Gc(Env &env, Tag exception) {
-  assert(IsType(env, exception));
+  assert(IsType(exception));
 
   if (Env::IsGcMarked(env, exception))
     return;
@@ -56,7 +56,7 @@ void Exception::Gc(Env &env, Tag exception) {
 
 /** * make view of exception **/
 Tag Exception::View(Env &env, Tag ex) {
-  assert(IsType(env, ex));
+  assert(IsType(ex));
 
   std::vector<Tag> view = std::vector<Tag>{tag(env, ex), eclass(env, ex),
                                            etype(env, ex), source(env, ex)};
@@ -66,7 +66,7 @@ Tag Exception::View(Env &env, Tag ex) {
 
 /** * raise exception **/
 void Exception::RaiseException(Env &env, Tag exception) {
-  assert(IsType(env, exception));
+  assert(IsType(exception));
 
   (void)env;
   throw exception;

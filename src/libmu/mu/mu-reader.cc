@@ -52,7 +52,7 @@ namespace mu {
 void Read(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[0];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "read", "error", "type", stream);
 
   if (Stream::IsEof(ctx.env, stream))

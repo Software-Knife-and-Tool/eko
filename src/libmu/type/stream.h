@@ -42,10 +42,10 @@ private:
   Layout stream_;
 
 public: /* tag */
-  static bool IsType(Env &, Tag);
+  static bool IsType(Tag);
 
   static system::Stream *stream(Env &env, Tag stream) {
-    assert(IsType(env, stream));
+    assert(IsType(stream));
 
     return Heap::Layout<Layout>(env, stream)->stream;
   }

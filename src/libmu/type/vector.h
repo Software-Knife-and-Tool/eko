@@ -48,7 +48,7 @@ public:
 
 public: /* string */
   static std::string StdStringOf(Env &env, Tag str) {
-    assert(IsType(env, str));
+    assert(IsType(str));
 
     return std::string{Data<char>(env, str), Length(env, str)};
   }
@@ -90,18 +90,18 @@ public: /* Tag */
   }
 
   static Tag Map(Env &, Tag, Tag);
-  static bool IsType(Env &, Tag);
+  static bool IsType(Tag);
 
   static inline bool IsTyped(Env &env, Tag ptr, SYS_CLASS vtype) {
     return (IsDirect(ptr) && (DirectClass(ptr) == DIRECT_CLASS::VECTOR) &&
             (vtype == SYS_CLASS::CHAR)) ||
-           (IsType(env, ptr) && (type(env, ptr) == vtype));
+           (IsType(ptr) && (type(env, ptr) == vtype));
   }
 
   static void *DataV(Env &, Tag &);
 
   template <typename T> static T *Data(Env &env, Tag &vector) {
-    assert(IsType(env, vector));
+    assert(IsType(vector));
 
     return IsDirect(vector)
                ? reinterpret_cast<T *>(reinterpret_cast<uint8_t *>(&vector) + 1)
@@ -109,13 +109,13 @@ public: /* Tag */
   }
 
   template <typename T> static inline T Ref(Env &env, Tag &vector, int index) {
-    assert(IsType(env, vector));
+    assert(IsType(vector));
 
     return Data<T>(env, vector)[index];
   }
 
   static size_t inline Length(Env &env, Tag vec) {
-    assert(IsType(env, vec));
+    assert(IsType(vec));
 
     return (IsDirect(vec) && DirectClass(vec) == DIRECT_CLASS::VECTOR)
                ? DirectSize(vec)
@@ -123,7 +123,7 @@ public: /* Tag */
   }
 
   static SYS_CLASS inline TypeOf(Env &env, Tag vec) {
-    assert(IsType(env, vec));
+    assert(IsType(vec));
 
     return (IsDirect(vec) && DirectClass(vec) == DIRECT_CLASS::VECTOR
                 ? SYS_CLASS::CHAR
@@ -131,7 +131,7 @@ public: /* Tag */
   }
 
   static inline Tag VecType(Env &env, Tag vec) {
-    assert(IsType(env, vec));
+    assert(IsType(vec));
 
     return Type::MapClassSymbol(TypeOf(env, vec));
   }

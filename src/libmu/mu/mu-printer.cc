@@ -56,7 +56,7 @@ void Write(Context &ctx, Frame &fp) {
   Tag stream = fp.argv[1];
   Tag escape = fp.argv[2];
 
-  if (!Stream::IsType(ctx.env, stream))
+  if (!Stream::IsType(stream))
     Exception::Raise(ctx.env, "write", "error", "type", stream);
 
   Env::Write(ctx.env, obj, stream, !Type::Null(escape));

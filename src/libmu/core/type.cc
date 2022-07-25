@@ -73,8 +73,8 @@ Tag Type::View(Env &env, Tag object) {
       {SYS_CLASS::STREAM, Stream::View},
       {SYS_CLASS::VECTOR, Vector::View}};
 
-  return kViewMap.contains(Type::TypeOf(env, object))
-             ? kViewMap.at(Type::TypeOf(env, object))(env, object)
+  return kViewMap.contains(Type::TypeOf(object))
+             ? kViewMap.at(Type::TypeOf(object))(env, object)
              : Type::NIL;
 }
 
@@ -116,7 +116,7 @@ Tag Type::MapClassSymbol(SYS_CLASS sys_class) {
 }
 
 /** * type of tagged pointer **/
-SYS_CLASS Type::TypeOf(Env &env, Tag ptr) {
+SYS_CLASS Type::TypeOf(Tag ptr) {
 
   switch (TagOf(ptr)) {
   case TAG::CONS:
@@ -124,7 +124,7 @@ SYS_CLASS Type::TypeOf(Env &env, Tag ptr) {
   case TAG::DIRECT:
     return SYS_CLASS(DirectClass(ptr));
   case TAG::INDIRECT:
-    return SYS_CLASS(Heap::SysClass(*env.heap->Map(ptr)));
+    return IndirectClass(ptr);
   case TAG::UNUSED:
     [[fallthrough]];
   default:

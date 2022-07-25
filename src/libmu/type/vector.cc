@@ -36,7 +36,7 @@ namespace {
 template <typename T>
 Tag list_to_vec(Env &env, const std::function<bool(Env &, Tag)> &isType,
                 const std::function<T(Tag)> &unbox, Tag list) {
-  assert(Cons::IsList(env, list));
+  assert(Cons::IsList(list));
   std::vector<T> vec;
 
   Cons::iter iter(env, list);
@@ -55,7 +55,7 @@ Tag list_to_vec(Env &env, const std::function<bool(Env &, Tag)> &isType,
 } /* anonymous namespace */
 
 void *Vector::DataV(Env &env, Tag &vector) {
-  assert(IsType(env, vector));
+  assert(IsType(vector));
 
   return IsDirect(vector) ? reinterpret_cast<void *>(
                                 reinterpret_cast<uint8_t *>(&vector) + 1)
@@ -63,15 +63,14 @@ void *Vector::DataV(Env &env, Tag &vector) {
                                 env.heap->HeapAddr(offset(env, vector)));
 }
 
-bool Vector::IsType(Env &env, Tag ptr) {
+bool Vector::IsType(Tag ptr) {
   return (IsDirect(ptr) && DirectClass(ptr) == DIRECT_CLASS::VECTOR) ||
-         (IsIndirect(ptr) &&
-          (env.heap->SysClass(env, ptr) == SYS_CLASS::VECTOR));
+         (IsIndirect(ptr) && (IndirectClass(ptr) == SYS_CLASS::VECTOR));
 }
 
 /** * vector slice **/
 Tag Vector::Slice(Env &env, Tag vec, Tag off, Tag len) {
-  assert(IsType(env, vec));
+  assert(IsType(vec));
   assert(Fixnum::IsType(off));
   assert(Fixnum::IsType(len));
 
@@ -122,8 +121,8 @@ Tag Vector::Slice(Env &env, Tag vec, Tag off, Tag len) {
   }
 
   Layout *vlayout = Heap::Layout<Layout>(env, vec);
-  Layout *nlayout =
-      env.heap->Layout<Layout>(env, Entag(alloc.value(), TAG::INDIRECT));
+  Layout *nlayout = env.heap->Layout<Layout>(
+      env, Entag(alloc.value(), SYS_CLASS::VECTOR, TAG::INDIRECT));
 
   *nlayout = *vlayout;
 
@@ -135,12 +134,12 @@ Tag Vector::Slice(Env &env, Tag vec, Tag off, Tag len) {
                  reinterpret_cast<size_t>(dst) + offset * type_size)))
           .tag_;
 
-  return Entag(alloc.value(), TAG::INDIRECT);
+  return Entag(alloc.value(), SYS_CLASS::VECTOR, TAG::INDIRECT);
 }
 
 /** * list to vector **/
 Tag Vector::ListToVector(Env &env, Tag vectype, Tag list) {
-  assert(Cons::IsList(env, list));
+  assert(Cons::IsList(list));
 
   SYS_CLASS vtype = Type::MapSymbolClass(vectype);
 
@@ -174,8 +173,8 @@ Tag Vector::ListToVector(Env &env, Tag vectype, Tag list) {
 
 /** * print vector to stream **/
 void Vector::Write(Env &env, Tag vector, Tag stream, bool esc) {
-  assert(IsType(env, vector));
-  assert(Stream::IsType(env, stream));
+  assert(IsType(vector));
+  assert(Stream::IsType(stream));
 
   switch (Vector::TypeOf(env, vector)) {
   case SYS_CLASS::CHAR: {
@@ -262,8 +261,8 @@ Tag Vector::Heap(Env &env) {
   if (!alloc.has_value())
     throw std::runtime_error("heap exhausted");
 
-  Layout *layout =
-      env.heap->Layout<Layout>(env, Entag(alloc.value(), TAG::INDIRECT));
+  Layout *layout = env.heap->Layout<Layout>(
+      env, Entag(alloc.value(), SYS_CLASS::VECTOR, TAG::INDIRECT));
 
   uint64_t data = Fixnum::Int64Of(vector_.offset);
 
@@ -279,7 +278,7 @@ Tag Vector::Heap(Env &env) {
 
   *layout = vector_;
 
-  Tag vec = Entag(alloc.value(), TAG::INDIRECT);
+  Tag vec = Entag(alloc.value(), SYS_CLASS::VECTOR, TAG::INDIRECT);
 
   if (Type::MapSymbolClass(vector_.type) == SYS_CLASS::CHAR)
     env.heap->InternString(env, vec);
@@ -289,7 +288,7 @@ Tag Vector::Heap(Env &env) {
 
 /** * view of vector object **/
 Tag Vector::View(Env &env, Tag vector) {
-  assert(IsType(env, vector));
+  assert(IsType(vector));
 
   std::vector<Tag> view =
       std::vector<Tag>{VecType(env, vector), Fixnum(length(env, vector)).tag_,
@@ -301,7 +300,7 @@ Tag Vector::View(Env &env, Tag vector) {
 /** * garbage collection **/
 /** * this is so wrong it makees my eyes water **/
 void Vector::Gc(Env &env, Tag vec) {
-  assert(IsType(env, vec));
+  assert(IsType(vec));
 
   if (!Type::IsDirect(vec)) {
     switch (Vector::TypeOf(env, vec)) {
@@ -332,7 +331,7 @@ void Vector::Gc(Env &env, Tag vec) {
 
 /** * vector parser **/
 Tag Vector::Read(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   Tag vectype = Env::Read(env, stream);
 
@@ -344,7 +343,7 @@ Tag Vector::Read(Env &env, Tag stream) {
 
 /** * read string **/
 Tag Vector::ReadString(Env &env, Tag stream) {
-  assert(Stream::IsType(env, stream));
+  assert(Stream::IsType(stream));
 
   std::string str;
 

@@ -44,7 +44,7 @@ namespace mu {
 void ListLength(Context &ctx, Frame &fp) {
   Tag list = fp.argv[0];
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "length", "error", "type", list);
 
   fp.value = Fixnum(Cons::Length(ctx.env, list)).tag_;
@@ -59,7 +59,7 @@ void Cons(Context &ctx, Frame &fp) {
 void Car(Context &ctx, Frame &fp) {
   Tag list = fp.argv[0];
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "car", "error", "type", list);
 
   fp.value = Cons::car(ctx.env, list);
@@ -69,7 +69,7 @@ void Car(Context &ctx, Frame &fp) {
 void Cdr(Context &ctx, Frame &fp) {
   Tag list = fp.argv[0];
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "cdr", "error", "type", list);
 
   fp.value = Cons::cdr(ctx.env, list);
@@ -86,7 +86,7 @@ void Nth(Context &ctx, Frame &fp) {
   if (Fixnum::Int64Of(nth) < 0)
     Exception::Raise(ctx.env, "nth", "error", "type", nth);
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "nth", "error", "type", list);
 
   fp.value = Cons::Nth(ctx.env, list, Fixnum::Int64Of(nth));
@@ -100,12 +100,12 @@ void Nthcdr(Context &ctx, Frame &fp) {
   if (!Fixnum::IsType(index) || Fixnum::Int64Of(index) < 0)
     Exception::Raise(ctx.env, "nthcdr", "error", "type", index);
 
-  if (!Cons::IsList(ctx.env, list))
+  if (!Cons::IsList(list))
     Exception::Raise(ctx.env, "nthcdr", "error", "type", list);
 
   uint64_t nth = Fixnum::Int64Of(index);
 
-  if (!Cons::IsList(ctx.env, Cons::cdr(ctx.env, list))) {
+  if (!Cons::IsList(Cons::cdr(ctx.env, list))) {
     if (nth > 1)
       Exception::Raise(ctx.env, "nthcdr", "error", "range", index);
 

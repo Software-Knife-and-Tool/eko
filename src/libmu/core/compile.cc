@@ -46,7 +46,7 @@ namespace {
 
 /** * compile a list of forms **/
 Tag compile_list(Context &ctx, Tag list) {
-  assert(Cons::IsList(ctx.env, list));
+  assert(Cons::IsList(list));
 
   std::vector<Tag> vlist{};
 
@@ -59,7 +59,7 @@ Tag compile_list(Context &ctx, Tag list) {
 
 /** * is this symbol in the lexical environment? **/
 std::optional<std::pair<Tag, int>> map_lexical_symbol(Env &env, Tag sym) {
-  assert(Symbol::IsType(env, sym) || Symbol::IsKeyword(sym));
+  assert(Symbol::IsType(sym) || Symbol::IsKeyword(sym));
 
   if (Symbol::IsKeyword(sym))
     return std::nullopt;
@@ -81,12 +81,12 @@ std::optional<std::pair<Tag, int>> map_lexical_symbol(Env &env, Tag sym) {
 
 /** * parse lambda definition **/
 void parse_lambda(Env &env, Tag lambda) {
-  assert(Cons::IsList(env, lambda));
+  assert(Cons::IsList(lambda));
 
   std::vector<Tag> lexicals{};
 
   std::function<void(Env &, Tag)> parse = [&lexicals](Env &env, Tag symbol) {
-    if (!Symbol::IsType(env, symbol))
+    if (!Symbol::IsType(symbol))
       Exception::Raise(env, ":lambda", "error", "type", symbol);
 
     if (Symbol::IsKeyword(symbol))
@@ -121,7 +121,7 @@ Tag def_lambda(Context &ctx, Tag form) {
   Tag lambda = Cons::Nth(env, form, 1);
   Tag body = Cons::cdr(env, Cons::cdr(env, form));
 
-  if (!Cons::IsList(env, lambda))
+  if (!Cons::IsList(lambda))
     Exception::Raise(env, ":lambda", "error", "type", lambda);
 
   if (Type::Eq(Cons::car(env, lambda), Symbol::Keyword("quote")))
@@ -190,15 +190,15 @@ Tag Compile::frameid() { return Symbol::Keyword(std::to_string(frame_id++)); }
 Tag Compile::Form(Context &ctx, Tag form) {
   Env &env = ctx.env;
 
-  switch (Type::TypeOf(env, form)) {
+  switch (Type::TypeOf(form)) {
   case SYS_CLASS::CONS: { /* funcall/special call */
     Tag fn = Cons::car(env, form);
 
-    switch (Type::TypeOf(env, fn)) {
+    switch (Type::TypeOf(fn)) {
     case SYS_CLASS::CONS: { /* list, should compile to a function */
       Tag func = Form(ctx, fn);
 
-      if (!Function::IsType(ctx.env, func))
+      if (!Function::IsType(func))
         Exception::Raise(env, "compile", "error", "type", fn);
 
       return Cons(func, compile_list(ctx, Cons::cdr(env, form))).Heap(env);

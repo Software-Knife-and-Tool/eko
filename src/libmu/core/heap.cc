@@ -40,7 +40,7 @@ namespace core {
 /** * convert tag to uint64_t **/
 void *Heap::LayoutAddr(Env &env, Tag ptr) {
 
-  return env.heap->HeapAddr(std::to_underlying(ptr) & ~0x7);
+  return env.heap->HeapAddr(Type::IndirectData(ptr));
 }
 
 /** * garbage collection **/

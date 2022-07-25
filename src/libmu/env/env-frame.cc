@@ -64,7 +64,7 @@ void FrameGet(Context &ctx, Frame &fp) {
 
   Tag fn = fp.argv[0];
 
-  if (!Function::IsType(ctx.env, fn))
+  if (!Function::IsType(fn))
     Exception::Raise(ctx.env, "fnv-lex", "error", "type", fn);
 
   std::optional<Frame *> fstate =
@@ -83,7 +83,7 @@ void FrameSetVar(Context &ctx, Frame &fp) {
   Tag off = fp.argv[1];
   Tag value = fp.argv[2];
 
-  if (!Cons::IsType(ctx.env, fr))
+  if (!Cons::IsType(fr))
     Exception::Raise(ctx.env, "fnv-set", "error", "type", fr);
 
   if (!Fixnum::IsType(off))
@@ -100,7 +100,7 @@ void FrameSet(Context &ctx, Frame &fp) {
   Tag off = fp.argv[1];
   Tag value = fp.argv[2];
 
-  if (!Function::IsType(ctx.env, fn))
+  if (!Function::IsType(fn))
     Exception::Raise(ctx.env, "lex-set", "error", "type", fn);
 
   if (!Fixnum::IsType(off))
@@ -120,7 +120,7 @@ void FrameSet(Context &ctx, Frame &fp) {
 void FramePush(Context &ctx, Frame &fp) {
   Tag fr = fp.argv[0];
 
-  if (!Cons::IsType(ctx.env, fr))
+  if (!Cons::IsType(fr))
     Exception::Raise(ctx.env, "fr-push", "error", "type", fr);
 
   Frame *frame = ctx.TagToFrame(fr);
@@ -134,7 +134,7 @@ void FramePush(Context &ctx, Frame &fp) {
 void FramePop(Context &ctx, Frame &fp) {
   Tag fr = fp.argv[0];
 
-  if (!Cons::IsType(ctx.env, fr))
+  if (!Cons::IsType(fr))
     Exception::Raise(ctx.env, "fr-pop", "error", "type", fr);
 
   delete ctx.closures[fr].back();

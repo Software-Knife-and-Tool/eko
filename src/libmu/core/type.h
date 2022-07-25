@@ -30,37 +30,29 @@ struct Env;
 /** * pure abstract base class for types **/
 class Type {
 public:
-  enum class Tag : uint64_t {};
+  enum class Tag : int64_t {};
 
 public: /* Tag */
   /** * 2 bit staged low tag **/
   enum class TAG : uint8_t {
-    DIRECT = 0,  /* 00 direct */
-    UNUSED = 1,  /* 01 unused */
-    CONS = 2,    /* 10 cons immediate */
-    INDIRECT = 3 /* 11 indirect */
+    DIRECT = 0,  /* 00 direct pointer layout: [d...].llltttTT **/
+    UNUSED = 1,  /* 01 unused should assert */
+    CONS = 2,    /* 10 cons immediate pointer layout: [c....][d....]TT **/
+    INDIRECT = 3 /* 11 indirect pointer layout: [h...]ttttTT **/
   };
 
   /** * extract tag **/
-  static inline TAG TagOf(Tag ptr) {
-    return static_cast<TAG>(std::to_underlying(ptr) & 0x3);
-  }
+  static inline TAG TagOf(Tag ptr) { return TAG(std::to_underlying(ptr) & 3); }
 
-  /** * make tagged pointer (fixnum uses this) **/
+  /** make cons immediate pointer **/
   static Tag Entag(uint64_t data, TAG tag) {
     return Tag(data | std::to_underlying(tag));
   }
 
-  /** * tagged pointer of (void *) **/
-  static Tag Entag(void *caddr, TAG tag) {
-    return Tag(reinterpret_cast<uint64_t>(caddr) | std::to_underlying(tag));
-  }
-
-  /** * extended direct, 3 bits **/
   enum class DIRECT_CLASS : uint8_t {
     FIXNUM = 0, /* fixnums */
     CHAR = 1,   /* chars and syntax */
-    VECTOR = 2, /* short tring vector */
+    VECTOR = 2, /* short string vector */
     SYMBOL = 3, /* keyword symbol */
     FLOAT = 4,  /* single precision float */
     /** * room for a pony */
@@ -80,7 +72,7 @@ public: /* Tag */
 
   /** * direct size (3 bits) **/
   static size_t DirectSize(Tag ptr) {
-    return size_t{(std::to_underlying(ptr) >> 5) & 0x7};
+    return (std::to_underlying(ptr) >> 5) & 0x7;
   }
 
   /** * direct class (3 bits) **/
@@ -106,27 +98,44 @@ public: /* Tag */
           ((static_cast<uint8_t>(DIRECT_CLASS::SYMBOL) & 0x7) << 2) |
           (static_cast<uint8_t>(TAG::DIRECT) & 0x3));
 
-  /** * system classes **/
+  /** * system classes : must match direct classes **/
   enum class SYS_CLASS : uint8_t {
-    FIXNUM,
-    CHAR,
-    VECTOR,
-    SYMBOL,
-    FLOAT,
-    BYTE,
+    FIXNUM = 0, /* fixnums */
+    CHAR = 1,   /* chars and syntax */
+    VECTOR = 2, /* short string vector */
+    SYMBOL = 3, /* keyword symbol */
+    FLOAT = 4,  /* single precision float */
     CONS,
     DOUBLE,
     EXCEPTION,
     FUNCTION,
     NAMESPACE,
     STREAM,
+    BYTE,
     T
   };
+
+  /** indirect pointers **/
+  static inline Tag Entag(uint64_t data, SYS_CLASS sys_class, TAG tag) {
+    (void)sys_class;
+    return Tag((data << 6) | (std::to_underlying(sys_class) << 2) |
+               std::to_underlying(tag));
+  }
+
+  static inline SYS_CLASS IndirectClass(Tag tag) {
+
+    return SYS_CLASS((std::to_underlying(tag) >> 2) & 0xf);
+  }
+
+  static inline uint64_t IndirectData(Tag tag) {
+
+    return int64_t{std::to_underlying(tag)} >> 6;
+  }
 
 public: /* tag */
   static Tag View(Env &, Tag);
   static SYS_CLASS MapSymbolClass(Tag);
-  static SYS_CLASS TypeOf(Env &, Tag);
+  static SYS_CLASS TypeOf(Tag);
   static Tag MapClassSymbol(SYS_CLASS);
   static bool IsClassSymbol(Tag);
 

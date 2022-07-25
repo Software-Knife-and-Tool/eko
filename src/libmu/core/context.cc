@@ -56,13 +56,13 @@ Tag Context::FrameToTag(Frame &fp) {
 }
 
 Tag Context::FuncIdOf(Tag frame) {
-  assert(Cons::IsType(env, frame));
+  assert(Cons::IsType(frame));
 
   return Cons::car(env, frame);
 }
 
 Tag Context::NthArgOf(Tag frame, size_t nth) {
-  assert(Cons::IsType(env, frame));
+  assert(Cons::IsType(frame));
 
   Tag argv = Cons::cdr(env, frame);
   assert(Vector::IsTyped(env, argv, SYS_CLASS::T));
@@ -72,7 +72,7 @@ Tag Context::NthArgOf(Tag frame, size_t nth) {
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void Context::SetNthArgOf(Tag frame, Tag value, size_t nth) {
-  assert(Cons::IsType(env, frame));
+  assert(Cons::IsType(frame));
 
   Tag argv = Cons::cdr(env, frame);
   assert(Vector::IsTyped(env, argv, SYS_CLASS::T));
@@ -81,10 +81,10 @@ void Context::SetNthArgOf(Tag frame, Tag value, size_t nth) {
 }
 
 Context::Frame *Context::TagToFrame(Tag frame) {
-  assert(Cons::IsType(env, frame));
+  assert(Cons::IsType(frame));
 
   Tag func = Cons::car(env, frame);
-  assert(Function::IsType(env, func));
+  assert(Function::IsType(func));
 
   Tag argv = Cons::cdr(env, frame);
   assert(Vector::IsTyped(env, argv, SYS_CLASS::T));
@@ -93,6 +93,7 @@ Context::Frame *Context::TagToFrame(Tag frame) {
 }
 
 Tag Context::CaptureContext() {
+
   std::vector<Tag> dynamic_{};
   for (auto fr : dynamic)
     dynamic_.push_back(FrameToTag(*fr));

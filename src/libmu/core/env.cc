@@ -196,7 +196,7 @@ std::optional<Tag> Env::MapNamespace(const std::string &ns) const {
 
 /** * add namespace object to environment map **/
 void Env::AddNamespace(Tag ns) {
-  assert(Namespace::IsType(*this, ns));
+  assert(Namespace::IsType(ns));
 
   auto ns_name = Vector::StdStringOf(*this, Namespace::name(*this, ns));
   auto ns_iter = namespaces.find(ns_name);
@@ -224,8 +224,8 @@ void Env::Gc(Env &env, Tag ptr) {
       {SYS_CLASS::SYMBOL, type::Symbol::Gc},
       {SYS_CLASS::VECTOR, type::Vector::Gc}};
 
-  assert(kGcTypeMap.contains(Type::TypeOf(env, ptr)));
-  kGcTypeMap.at(Type::TypeOf(env, ptr))(env, ptr);
+  assert(kGcTypeMap.contains(Type::TypeOf(ptr)));
+  kGcTypeMap.at(Type::TypeOf(ptr))(env, ptr);
 }
 
 /** * env constructor **/
