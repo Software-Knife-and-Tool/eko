@@ -126,12 +126,12 @@
 
 (mu::intern core::ns :intern "defun"
    (:lambda (form env)
-      ((:lambda (symbol lambda)
+      ((:lambda (symbol lambda-expr)
          (core:errorp-unless core:symbolp symbol "core::defun: not a symbol")
          (core:errorp-when core:keywordp symbol "core::defun: not a symbol")
-         (core:errorp-unless core:listp lambda "core::defun: not a lambda list")
+         (core:errorp-unless core:listp lambda-expr "core::defun: not a lambda list")
          (mu::compile (mu:cons :quote
-                        (mu:cons (core::def-symbol symbol (core::lambda (mu:cons :lambda lambda) env) env)
+                        (mu:cons (core::def-symbol symbol (core::lambda (mu:cons :lambda lambda-expr) env) env)
                           ()))))
        (mu:nth 1 form)
        (mu:nthcdr 2 form))))

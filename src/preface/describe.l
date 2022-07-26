@@ -5,7 +5,6 @@
   (flet ((describe-function (fn)
            (errorp-unless functionp fn "describe-function: not a function")
            (let ((desc (core::fn-extension fn)))
-             (format t "   name: ~A~%" (core::fn-name fn))
              (format t "   nreq: ~A~%" (core::fn-nreqs fn))
              (format t " lambda: ~A~%" (core::fn-form fn))
              (cond
