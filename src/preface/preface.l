@@ -174,7 +174,7 @@
 
 (defmacro letf (binds &rest body)
   (errorp-unless listp binds "letf: not a list")
-  (list* 'preface:let
+  (list* 'let
          (mapcar
            (lambda (bind)
              (list (car bind)
@@ -215,6 +215,17 @@
      (if (cdr binds)
          (list 'flet (list (car binds)) (core:funcall fn (list fn (cdr binds))))
          (list* 'flet (list (car binds)) body)))))
+
+(defmacro defun-rec (name lambda &rest body)
+  (errorp-unless symbolp name "defun: not a symbol")
+  (errorp-when keywordp name "defun: not a symbol")
+  (errorp-unless listp lambda "defun: not a lambda list")
+  (format t "expands to: ~A~%" (list 'lambda lambda (list* 'letf (list (list* name lambda body)) body)))
+  (core::def-symbol
+        name
+        (core:compile (list 'lambda lambda (list* 'letf (list (list* name lambda body)) body)))
+        ())
+  (list :quote name))
 
 (defun compose (&rest fns)
   (lambda (arg)
